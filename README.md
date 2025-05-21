@@ -193,7 +193,7 @@ Continuously displays the real-time logs from both containers.
 ```bash
 # All lines of logs:
 docker compose logs -f
-
+```
 ___
 
 ## Step 7. Checking If Nodes Are Synced
