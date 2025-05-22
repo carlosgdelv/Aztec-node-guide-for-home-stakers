@@ -82,9 +82,10 @@ newgrp docker
 ---
 
 ## Step 2. Create Directories
-Creates the necessary folders to store Geth (execution) and Prysm (consensus) client data under the user's home directory.
+These commands create the necessary directory structure for Ethereum's execution (/execution) and consensus (/consensus) clients under /root/ethereum, ensuring the paths exist for storing their respective data.
 ```bash
-mkdir -p ~/ethereum/execution ~/ethereum/consensus
+sudo mkdir -p /root/ethereum/execution
+sudo mkdir -p /root/ethereum/consensus
 ```
 
 ---
@@ -92,8 +93,13 @@ mkdir -p ~/ethereum/execution ~/ethereum/consensus
 ## Step 3. Generate the JWT secret:
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
+Generates a random 32-byte hexadecimal string using OpenSSL and saves it to the file /root/ethereum/jwt.hex with root permissions.
 ```bash
-openssl rand -hex 32 > ~/ethereum/jwt.hex
+sudo bash -c "openssl rand -hex 32 > /root/ethereum/jwt.hex"
+```
+Displays the contents of the /root/ethereum/jwt.hex file with root permissions.
+```bash
+sudo cat /root/ethereum/jwt.hex
 ```
 
 ---
@@ -101,7 +107,7 @@ openssl rand -hex 32 > ~/ethereum/jwt.hex
 ## Step 4. Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the Docker Compose configuration.
 ```bash
-cd ethereum
+cd ~/ethereum
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
