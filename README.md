@@ -319,7 +319,7 @@ services:
     ports:
       - 40400:40400/tcp
       - 40400:40400/udp
-      - 8081:8081
+      - 8080:8080
 ```
 Starts all services defined in your `docker-compose.yml` in the background (detached mode)
 ```bash
