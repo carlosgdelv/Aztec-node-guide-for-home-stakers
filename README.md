@@ -1,31 +1,55 @@
-# Atec-full-node-guide-for-degens
+# AZTEC-NODE-GUIDE-FOR-DEGENS
 
-## eth-prysm-node
+
+___
+
+
+# Geth-Prysm-node
 Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
 
 ___
 
-## Hardware Requirements
+
+
+
+## Hardware Requirements (Recommendation)
 <table>
   <tr>
     <th colspan="3"> OS: Ubuntu 20.04 or later</th>
   </tr>
   <tr>
-    <td>RAM</td>
     <td>CPU</td>
+    <td>ram</td>
     <td>Disk</td>
   </tr>
   <tr>
-    <td><code>8-16 GB</code></td>
-    <td><code>4-6 cores</code></td>
-    <td><code>Initially 550 GB SSD - Can grow upto 1 TB</code></td>
+    <td><code>6-8 cores</code></td>
+    <td><code>16 GB DDR5</code></td>
+    <td><code>1.5 TB SSD</code></td>
   </tr>
 </table>
 
 
-  Machine: 16-Core CPU; 32 GiB RAM; 1,5 TB NVMe SSD
-  Network: 125 Mbps up/down bandwidth
+## My personal PC specifications for Running a Node
 
+
+- **Processor (CPU)**  
+  Intel Core i7 (14th Gen) with 20 cores (8 Performance + 12 Efficient), 3.4 GHz base and 5.6 GHz max turbo.
+
+- **Memory (RAM)**  
+  32GB DDR5 (2×16GB) at 6000 MHz with CL32 latency in dual-channel configuration.
+
+- **Storage**  
+  2TB SSD using PCIe 4.0 NVMe interface with Gen 4x4 for high-speed data transfer.
+
+- **Power Supply (PSU)**  
+  750W unit with 80 Plus Bronze certification for efficient energy usage.
+
+- **Cooling**  
+  240mm liquid cooler with dual fans and RGB lighting for effective thermal management.
+
+- **Motherboard**  
+  ATX board with B760 chipset, supports DDR5, PCIe 4.0, and includes built-in Wi-Fi.
 
 ---
 
@@ -329,6 +353,78 @@ Streams real-time combined logs from all running Compose services, letting you w
 ```bash
 docker compose logs -f
 ```
+Stop and Kill Node
+```bash
+docker compose down -v
+```
+___
+
+## Update Sequencer Node
+* 1- Stop Node:
+```console
+# CLI
+docker stop $(docker ps -q --filter "ancestor=aztecprotocol/aztec") && docker rm $(docker ps -a -q --filter "ancestor=aztecprotocol/aztec")
+
+screen -ls | grep -i aztec | awk '{print $1}' | xargs -I {} screen -X -S {} quit
+
+# Docker
+docker compose down
+```
+
+* 2- Update Node:
+```bash
+aztec-up alpha-testnet
+
+docker compose pull
+```
+
+* 3- Delete old data:
+This command forcefully deletes the entire Aztec alpha-testnet data directory and all its contents from your home folder to reset the node.
+```bash
+rm -rf ~/.aztec/alpha-testnet/data/
+```
+
+* 4- Re-run Node
+
+Return to Step 4 to re-run your node
+
+
+
+___
+
+
+## Register Validator
+Make sure your Sequencer node is fully synced, before you proceed with Validator registration
+```bash
+aztec add-l1-validator \
+  --l1-rpc-urls RPC_URL \
+  --private-key your-private-key \
+  --attester your-validator-address \
+  --proposer-eoa your-validator-address \
+  --staking-asset-handler 0xF739D03e98e23A7B65940848aBA8921fF3bAc4b2 \
+  --l1-chain-id 11155111
+```
+## Verify Node's Peer ID:
+**Find your Node's Peer ID:**
+```bash
+sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-testnet | head -n 1) 2>&1 | grep -i "peerId" | grep -o '"peerId":"[^"]*"' | cut -d'"' -f4 | head -n 1
+```
+* This reveals your Node's Peer ID, Now search it on [Nethermind Explorer](https://aztec.nethermind.io/)
+* Note: It might takes some hours for your node to show up in Nethermind Explorer after it fully synced.
+
+
+___
+
+
+## Sequencer/Validator Health Check
+* Validator attestation stats:
+
+https://t.me/aztec_seer_bot
+
+![image](https://github.com/user-attachments/assets/04ca9f5d-ba72-43be-98ad-3601255000bf)
+
+___
+
 ## - Getting Apprentice Role:
 Head to Aztec Discord and go to `operator | start-here` channel
 Run command `/operator help` there
@@ -366,6 +462,8 @@ Congratulations, now you have Apprentice role!
 
 If it successfully registered you can check it from operator | start-here and use the command /operator my-stats and enter your validator address.
 NOTE: Currently there is a daily registration quota each day, if you missed it now you can try tomorrow.
+
+
 
 ___
 ___
