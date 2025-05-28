@@ -2,8 +2,9 @@
 
 ___
 
-# Eth-Prysm-node
-Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
+# 
+
+
 
 ___
 
@@ -49,7 +50,13 @@ ___
 - **Motherboard**  
   ATX board with B760 chipset, supports DDR5, PCIe 4.0, and includes built-in Wi-Fi.
 
----
+
+___
+
+# Eth-Prysm-node
+Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
+
+___
 
 ## Step 1. Install Dependecies
 **Packages:**
@@ -447,9 +454,9 @@ services:
       ETHEREUM_HOSTS: "http://localhost:8545"
       L1_CONSENSUS_HOST_URLS: "http://localhost:3500"
       DATA_DIRECTORY: /data
-      VALIDATOR_PRIVATE_KEY: your-private-key
-      COINBASE: your-publice-key
-      P2P_IP: your-public-IP
+      VALIDATOR_PRIVATE_KEY: 0xPrivateKey
+      COINBASE: 0xPubliceKey
+      P2P_IP: IP
       LOG_LEVEL: debug
     entrypoint: >
       sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080'
@@ -466,6 +473,10 @@ Streams real-time combined logs from all running Compose services, letting you w
 docker compose logs -f
 ```
 
+The command `aztec -V` displays the currently installed version of the Aztec CLI.
+```bash
+aztec -V
+```
 ___
 
 ## Step 9. Update Sequencer Node
