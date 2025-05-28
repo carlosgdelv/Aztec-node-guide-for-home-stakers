@@ -456,7 +456,6 @@ services:
       DATA_DIRECTORY: /data
       VALIDATOR_PRIVATE_KEY: 0xPrivateKey
       COINBASE: 0xPubliceKey
-      P2P_IP: IP
       LOG_LEVEL: debug
     entrypoint: >
       sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080'
@@ -481,8 +480,7 @@ ___
 
 ## Step 9. Update Sequencer Node
 * 1- Stop node. Run `docker compose down` to stop and remove all running Aztec containers before updating.
-```console
-# Docker
+```bash
 docker compose down
 ```
 
