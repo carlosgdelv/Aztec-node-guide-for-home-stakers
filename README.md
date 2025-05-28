@@ -3,7 +3,8 @@
 ___
 
 # 
-
+* This reveals your Node's Peer ID, Now search it on [Nethermind Explorer](https://aztec.nethermind.io/)
+* Note: It might takes some hours for your node to show up in Nethermind Explorer after it fully synced.
 
 
 ___
@@ -396,6 +397,8 @@ ip a
 If you have correctly configured port forwarding on your router, verify the accessibility of your nodes and services using the following commands:
 
 
+CanYouSeeMe.org is an online tool used to check whether a specific port on your public IP address is open and accessible from the internet.
+
 Lists all processes on the local machine that are currently using TCP or UDP port 40400 (internal port).
 ```bash
 sudo lsof -i :40400
@@ -546,7 +549,8 @@ https://t.me/aztec_seer_bot
 
 ___
 
-## - Getting Apprentice Role:
+## Getting Apprentice Role:
+
 Head to Aztec Discord and go to `operator | start-here` channel
 Run command `/operator help` there
 Run this command:
@@ -555,7 +559,7 @@ curl -s -X POST -H 'Content-Type: application/json' \
 -d '{"jsonrpc":"2.0","method":"node_getL2Tips","params":[],"id":67}' \
 http://localhost:8080 | jq -r ".result.proven.number"
 ```
-~ Change `http://localhost:8080` with your VPS IP:8080
+Change `http://localhost:8080` with your VPS IP:8080
 You will get a BLOCK_NUMBER like `21000` for example, save it.
 
 Now run this:
@@ -565,10 +569,9 @@ curl -s -X POST -H 'Content-Type: application/json' \
 -d '{"jsonrpc":"2.0","method":"node_getArchiveSiblingPath","params":["BLOCK_NUMBER","BLOCK_NUMBER"],"id":67}' \
 http://localhost:8080 | jq -r ".result"
 ```
-~ Change 2X BLOCK_NUMBER with the `BLOCK_NUMBER` you get recently.
+Change 2X BLOCK_NUMBER with the `BLOCK_NUMBER` you get recently.
 
 Copy the PROOF and save it.
-___
 
 Now head back to `operator | start-here` and run `/operator start` command.
 
@@ -584,9 +587,6 @@ Congratulations, now you have Apprentice role!
 If it successfully registered you can check it from operator | start-here and use the command /operator my-stats and enter your validator address.
 NOTE: Currently there is a daily registration quota each day, if you missed it now you can try tomorrow.
 
-
-
-___
 ___
 
 ## Monitor System
