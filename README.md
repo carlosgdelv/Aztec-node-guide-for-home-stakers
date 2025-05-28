@@ -1,4 +1,4 @@
-# AZTEC-NODE-GUIDE-FOR-DEGENS
+# AZTEC-FULL-NODE-&-VALIDATOR-GUIDE-FOR-HOME-STAKERS
 
 ___
 
@@ -382,7 +382,7 @@ To configure a DHCP reservation, you’ll need the MAC address of each PC, which
 
 MAC address
 ```bash
-`ip a`
+ip a
 ```
 
 
@@ -401,15 +401,15 @@ Attempts to establish a TCP connection to internal port 40404 on localhost (loop
 ```bash
 nc -vz localhost 40404
 ```
-Tries to establish a TCP connection to external (public) IP 79.116.75.145 on external port 8080, to verify port forwarding or public availability.
+Tries to establish a TCP connection to external (public) IP on external port 8080, to verify port forwarding or public availability.
 ```bash
 nc -vz yourpublicIP 8080
 ```
-Attempts to reach external IP 79.116.75.145 on external port 40400, verifying whether this port is exposed through the router via port forwarding.
+Attempts to reach external IP on external port 40400, verifying whether this port is exposed through the router via port forwarding.
 ```bash
 nc -vz yourpublicIP 40400
 ```
-Attempts to connect to another device within the local network (internal IP 192.168.1.135) on its internal port 40400, to test LAN-level connectivity.
+Attempts to connect to another device within the local network (internal IP ) on its internal port 40400, to test LAN-level connectivity.
 ```bash
 nc -vz yourinternalIP 40400
 ```
