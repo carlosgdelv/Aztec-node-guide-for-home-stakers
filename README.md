@@ -13,7 +13,8 @@ ___
 This guide is based on a combination of official Aztec documentation, community resources, and original research and testing.
 References include:
 
-* https://docs.aztec.network/the_aztec_network/guides/run_nodes/how_to_run_sequencer. 
+* https://docs.aztec.network/the_aztec_network/guides/run_nodes/how_to_run_sequencer.
+* https://docs.aztec.network/the_aztec_network/guides/useful_commands.
 * https://github.com/0xmoei/aztec-network. 
 * https://github.com/frianowzki/aztec-sequencer-node.
 
@@ -53,13 +54,13 @@ ___
   2TB SSD using PCIe 4.0 NVMe interface with Gen 4x4 for high-speed data transfer.
 
 - **Power Supply (PSU)**  
-  750W unit with 80 Plus Bronze certification for efficient energy usage.
+  750W unit.
 
 - **Cooling**  
   240mm liquid cooler with dual fans and RGB lighting for effective thermal management.
 
 - **Motherboard**  
-  ATX board with B760 chipset, supports DDR5, PCIe 4.0, and includes built-in Wi-Fi.
+  ATX board with B760 chipset, supports DDR5 and PCIe 4.0.
 
 
 ___
