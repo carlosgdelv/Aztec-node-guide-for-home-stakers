@@ -18,7 +18,7 @@ References include:
 * https://github.com/0xmoei/aztec-network. 
 * https://github.com/frianowzki/aztec-sequencer-node.
 
-It may contain inaccuracies or evolve as the network changes — feedback and contributions are welcome to improve its reliability.
+This guide may contain inaccuracies or evolve as the network changes — feedback and contributions are welcome to improve its reliability.
 
 ___
 
