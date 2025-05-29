@@ -2,14 +2,24 @@
 
 ___
 
-# 
-* This reveals your Node's Peer ID, Now search it on [Nethermind Explorer](https://aztec.nethermind.io/)
-* Note: It might takes some hours for your node to show up in Nethermind Explorer after it fully synced.
+# Why Running Your Own Ethereum Full Node Matters for Aztec Operators
 
+Although it may seem counterintuitive, this guide strongly recommends running your own Ethereum full node (execution + consensus) for optimal performance, stability, and compatibility when operating an Aztec node or sequencer. Reliance on third-party RPC providers introduces latency, data inconsistency, and synchronization issues that can critically affect node behavior.
 
 ___
 
+# Documentation and Community Resources
 
+This guide is based on a combination of official Aztec documentation, community resources, and original research and testing.
+References include:
+
+* https://docs.aztec.network/the_aztec_network/guides/run_nodes/how_to_run_sequencer. 
+* https://github.com/0xmoei/aztec-network. 
+* https://github.com/frianowzki/aztec-sequencer-node.
+
+It may contain inaccuracies or evolve as the network changes — feedback and contributions are welcome to improve its reliability.
+
+___
 
 
 ## Hardware Requirements (Recommendation)
