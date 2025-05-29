@@ -22,7 +22,7 @@ It may contain inaccuracies or evolve as the network changes — feedback and co
 ___
 
 
-## Hardware Requirements (Recommendation)
+# Hardware Requirements (Recommendation)
 <table>
   <tr>
     <th colspan="3"> OS: Ubuntu 20.04 or later</th>
