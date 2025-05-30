@@ -612,7 +612,7 @@ docker exec -it prysm du -sh /data
 ```
 * Monitor Aztec Disk usage:
 ```bash
-docker exec -it nodeaztec-node-1 du -sh /data/*
+sudo find /root/.aztec/alpha-testnet/data/ -maxdepth 1 -exec du -sh {} \;
 ```
 ___
 
