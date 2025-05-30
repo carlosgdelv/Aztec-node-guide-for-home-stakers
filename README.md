@@ -357,7 +357,7 @@ sudo ufw allow ssh
 sudo ufw enable
 
 
-# Sequencer
+# Ports
 sudo ufw allow 40400
 sudo ufw allow 8080
 ```
