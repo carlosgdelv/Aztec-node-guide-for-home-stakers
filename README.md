@@ -23,7 +23,7 @@ References include:
 ___
 
 
-# Hardware Requirements (Recommendation)
+# Recommended Hardware Specifications
 <table>
   <tr>
     <th colspan="3"> OS: Ubuntu 20.04 or later</th>
@@ -41,7 +41,7 @@ ___
 </table>
 
 
-## My personal PC specifications for Running a Node
+## System Specifications of My Personal Computer for Running a Node
 
 
 - **Processor (CPU)**  
