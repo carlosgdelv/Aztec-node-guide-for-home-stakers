@@ -246,7 +246,7 @@ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","metho
 ```
 You'll see an object with `startingBlock`, `currentBlock`, and `highestBlock`, indicating the sync progress.
 
-➡️**Beacon Node (Prysm)**
+**Beacon Node (Prysm)**
 ```bash
 curl http://localhost:3500/eth/v1/node/syncing
 ```
