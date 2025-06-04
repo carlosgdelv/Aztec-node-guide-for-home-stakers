@@ -113,6 +113,8 @@ These commands create the necessary directory structure for Ethereum's execution
 sudo mkdir -p /root/ethereum/execution
 sudo mkdir -p /root/ethereum/consensus
 ```
+> If you encounter permission issues using the `/root` directory, try using a directory inside your home folder (e.g., `/home/username/ethereum`). This avoids the need for superuser access and simplifies file management.
+
 
 ---
 
@@ -208,7 +210,8 @@ services:
         max-file: "3"
 ```
 
-If a port is in use, edit the `docker-compose.yml` to map to a different host port (e.g., `8546:8545` to `8547:8545`).
+> If you face permission or access issues with the `/root` directory in the Docker volumes, it's recommended to replace `/root/ethereum` with a path inside your home directory, such as `/home/username/ethereum`. This avoids requiring root privileges and makes managing files and permissions easier for regular users.
+
 
 ___
 
@@ -452,8 +455,8 @@ services:
       ETHEREUM_HOSTS: "http://localhost:8545"
       L1_CONSENSUS_HOST_URLS: "http://localhost:3500"
       DATA_DIRECTORY: /data
-      VALIDATOR_PRIVATE_KEY: your-private-key
-      COINBASE: your-publice-key
+      VALIDATOR_PRIVATE_KEY: 0XPrivateKey
+      COINBASE: 0xPubliceKey
       P2P_IP: your-public-IP
       LOG_LEVEL: debug
     entrypoint: >
