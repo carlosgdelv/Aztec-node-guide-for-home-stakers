@@ -2,8 +2,7 @@
 
 ___
 
-# Eth-Prysm-node
-Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
+
 
 ___
 
@@ -49,7 +48,13 @@ ___
 - **Motherboard**  
   ATX board with B760 chipset, supports DDR5, PCIe 4.0, and includes built-in Wi-Fi.
 
----
+___
+
+
+# Eth-Prysm-node
+Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
+
+___
 
 ## Step 1. Install Dependecies
 **Packages:**
@@ -596,26 +601,27 @@ NOTE: Currently there is a daily registration quota each day, if you missed it n
 ___
 
 ## Monitor System
-* Monitor your hardware usage:
+
+Monitor your hardware usage:
 ```bash
 htop
 ```
 
-* Monitor your Disk usage:
+Monitor your Disk usage:
 ```bash
 df -h
 ```
 
-* Monitor Geth Disk usage:
+Monitor Geth Disk usage:
 ```bash
 docker exec -it geth du -sh /data
 ```
 
-* Monitor Prysm Disk usage:
+Monitor Prysm Disk usage:
 ```bash
 docker exec -it prysm du -sh /data
 ```
-* Monitor Aztec Disk usage:
+Monitor Aztec Disk usage:
 ```bash
 docker exec -it nodeaztec-node-1 du -sh /data/*
 ```
