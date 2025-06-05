@@ -2,7 +2,17 @@
 
 ___
 
+## Reference Documentation
 
+
+Below you’ll find links to the official Aztec documentation, along with community-contributed resources designed to help you deploy, configure, and operate Aztec nodes:
+
+- https://docs.aztec.network/the_aztec_network/guides/run_nodes/how_to_run_sequencer
+- https://docs.aztec.network/the_aztec_network/guides/run_nodes/cli_reference
+- https://github.com/0xmoei/geth-prysm-node
+- https://github.com/frianowzki/aztec-sequencer-node
+- https://aztec.starfrich.me/
+- https://dashtec.xyz/
 
 ___
 
