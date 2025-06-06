@@ -25,7 +25,7 @@ ___
 
 
 
-## Hardware Requirements (Recommendation)
+##  Suggested Hardware Requirements
 <table>
   <tr>
     <th colspan="3"> OS: Ubuntu 20.04 or later</th>
