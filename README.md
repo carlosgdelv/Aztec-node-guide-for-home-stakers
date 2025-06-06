@@ -53,10 +53,10 @@ ___
   750W unit with 80 Plus Bronze certification for efficient energy usage.
 
 - **Cooling**  
-  240mm liquid cooler with dual fans and RGB lighting for effective thermal management.
+  240mm liquid cooler with dual fans.
 
 - **Motherboard**  
-  ATX board with B760 chipset, supports DDR5, PCIe 4.0, and includes built-in Wi-Fi.
+  ATX board with B760 chipset, supports DDR5 and PCIe 4.0.
 
 ___
 
