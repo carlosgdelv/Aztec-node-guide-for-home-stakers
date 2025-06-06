@@ -2,6 +2,12 @@
 
 ___
 
+## Why We Recommend Running Your Own Ethereum Node
+
+To operate an Aztec node reliably, it is best to manage your own Ethereum execution and consensus clients. Doing so ensures low-latency, high-availability RPC access, eliminating external dependencies that may introduce downtime or rate-limiting. In past incidents, reliance on third-party Ethereum RPCs caused unexpected failures in Aztec node synchronization and sequencing. While external RPCs may seem convenient, they often introduce instability, making self-hosted nodes the more resilient and technically efficient solution.
+
+___
+
 ## Reference Documentation
 
 
