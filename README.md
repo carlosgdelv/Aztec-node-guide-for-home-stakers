@@ -126,7 +126,7 @@ newgrp docker
 ## Step 2. Create Directories
 These commands create the necessary directory structure for Ethereum's execution (/execution) and consensus (/consensus) clients under /root/ethereum, ensuring the paths exist for storing their respective data.
 ```bash
-sudo mkdir -p /home/<user>ethereum/execution
+sudo mkdir -p /home/<user>/ethereum/execution
 sudo mkdir -p /home/<user>/ethereum/consensus
 ```
 > If you encounter permission issues using the `/root` directory, try using a directory inside your home folder (e.g., `/home/username/ethereum`). This avoids the need for superuser access and simplifies file management.
