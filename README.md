@@ -126,8 +126,8 @@ newgrp docker
 ## Step 2. Create Directories
 These commands create the necessary directory structure for Ethereum's execution (/execution) and consensus (/consensus) clients under /root/ethereum, ensuring the paths exist for storing their respective data.
 ```bash
-sudo mkdir -p /root/ethereum/execution
-sudo mkdir -p /root/ethereum/consensus
+sudo mkdir -p /home/<user>ethereum/execution
+sudo mkdir -p /home/<user>/ethereum/consensus
 ```
 > If you encounter permission issues using the `/root` directory, try using a directory inside your home folder (e.g., `/home/username/ethereum`). This avoids the need for superuser access and simplifies file management.
 
@@ -139,11 +139,11 @@ Generates a 32-byte random JWT secret in hexadecimal format and saves it to a fi
 
 Generates a random 32-byte hexadecimal string using OpenSSL and saves it to the file /root/ethereum/jwt.hex with root permissions.
 ```bash
-sudo bash -c "openssl rand -hex 32 > /root/ethereum/jwt.hex"
+sudo bash -c "openssl rand -hex 32 > /home/<user>/ethereum/jwt.hex"
 ```
 Displays the contents of the /root/ethereum/jwt.hex file with root permissions.
 ```bash
-sudo cat /root/ethereum/jwt.hex
+sudo cat /home/<user>/ethereum/jwt.hex
 ```
 
 ---
@@ -151,6 +151,7 @@ sudo cat /root/ethereum/jwt.hex
 ## Step 4. Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the Docker Compose configuration.
 ```bash
+sudo mkdir ~/ethereum
 cd ~/ethereum
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
@@ -172,8 +173,8 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /root/ethereum/execution:/data
-      - /root/ethereum/jwt.hex:/data/jwt.hex
+      - /home/<user>/ethereum/execution:/data
+      - /home/<user>/ethereum/jwt.hex:/data/jwt.hex
     command:
       - --sepolia
       - --http
@@ -197,8 +198,8 @@ services:
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /root/ethereum/consensus:/data
-      - /root/ethereum/jwt.hex:/data/jwt.hex
+      - /home/<user>/ethereum/consensus:/data
+      - /home/<user>/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
