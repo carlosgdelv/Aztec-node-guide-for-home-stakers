@@ -43,7 +43,7 @@ ___
 </table>
 
 
-## My personal PC specifications for Running a Node
+## Personal PC Specifications for Running a Node
 
 
 - **Processor (CPU)**  
