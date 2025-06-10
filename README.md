@@ -19,6 +19,7 @@ Below you’ll find links to the official Aztec documentation, along with commun
 - https://github.com/frianowzki/aztec-sequencer-node
 - https://aztec.starfrich.me/
 - https://dashtec.xyz/
+- https://aztec.denodes.app/dashboard
 
 ___
 
