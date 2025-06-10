@@ -307,7 +307,7 @@ ___
 
 
 ## Step 3. Add Aztec CLI to Your System PATH
-This appends the Aztec binary path (~/.aztec/bin) to your PATH environment variable in the .bashrc file, so that your system can recognize the aztec command from any terminal.
+This appends the Aztec binary path (`~/.aztec/bin`) to your PATH environment variable in the `.bashrc` file, so that your system can recognize the aztec command from any terminal.
 
 ```bash
 echo 'export PATH="$HOME/.aztec/bin:$PATH"' >> ~/.bashrc
