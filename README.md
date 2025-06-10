@@ -238,7 +238,6 @@ docker compose up -d
 Node Logs
 Continuously displays the real-time logs from both containers.
 ```bash
-# All lines of logs:
 docker compose logs -f
 ```
 ___
