@@ -4,7 +4,7 @@ ___
 
 ## Why We Recommend Running Your Own Ethereum Node
 
-To operate an Aztec node reliably, it is best to manage your own Ethereum execution and consensus clients. Doing so ensures low-latency, high-availability RPC access, eliminating external dependencies that may introduce downtime or rate-limiting. In past incidents, reliance on third-party Ethereum RPCs caused unexpected failures in Aztec node synchronization and sequencing. While external RPCs may seem convenient, they often introduce instability, making self-hosted nodes the more resilient and technically efficient solution.
+To operate an Aztec node reliably, it is necessary to also run your own Ethereum execution and consensus clients. Aztec depends on the Ethereum base layer for data availability and settlement, which means it constantly queries and submits transactions to Ethereum. By managing your own Ethereum clients, you ensure low-latency, high-availability RPC access, reducing the risk of downtime, rate-limiting, or outages caused by third-party providers. Past issues with public RPCs have led to Aztec nodes failing to sync or sequence correctly, so running self-hosted clients is the most resilient and technically sound approach.
 
 ___
 
@@ -569,6 +569,7 @@ sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-test
 ```
 * This reveals your Node's Peer ID, Now search it on [Nethermind Explorer](https://aztec.nethermind.io/)
 * Note: It might takes some hours for your node to show up in Nethermind Explorer after it fully synced.
+* Note: If you get no output, replace `alpha-testnet` with the specific version tag (e.g. `0.87.8`) to retrieve the peer ID.
 
 
 ___
