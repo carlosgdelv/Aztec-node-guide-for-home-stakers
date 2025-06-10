@@ -152,7 +152,7 @@ cd /root/ethereum
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
-sudo nano docker-compose.yml
+nano docker-compose.yml
 ```
 Replace the following code into your `docker-compose.yml` file:
 ```yaml
