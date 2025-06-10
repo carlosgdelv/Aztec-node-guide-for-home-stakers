@@ -489,7 +489,6 @@ ___
 ## Step 9. Update Sequencer Node
 * 1- Stop node. Run `docker compose down` to stop and remove all running Aztec containers before updating.
 ```console
-# Docker
 docker compose down
 ```
 
