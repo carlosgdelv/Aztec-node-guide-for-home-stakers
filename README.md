@@ -124,9 +124,9 @@ newgrp docker
 ---
 
 ## Step 2. Create Directories
-These commands create the necessary directory structure for Ethereum's execution (/execution) and consensus (/consensus) clients under the /root/ethereum folder (used for running with sudo/root permissions):
+These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
 ```bash
-sudo mkdir -p /root/ethereum/execution /root/ethereum/consensus
+mkdir -p ~/ethereum/execution ~/ethereum/consensus
 ```
 
 ---
@@ -134,21 +134,21 @@ sudo mkdir -p /root/ethereum/execution /root/ethereum/consensus
 ## Step 3. Generate the JWT secret:
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
-
 ```bash
-sudo bash -c "openssl rand -hex 32 > /root/ethereum/jwt.hex"
+openssl rand -hex 32 > ~/ethereum/jwt.hex
 ```
-Displays the contents of the /root/ethereum/jwt.hex file with root permissions.
+
+Prints the contents of the jwt.hex file to verify it was correctly generated.
 ```bash
-sudo cat /root/ethereum/jwt.hex
+cat ~/ethereum/jwt.hex
 ```
 
 ---
 
 ## Step 4. Configure `docker-compose.yml`
-Changes the current working directory to the `ethereum` folder where you will place the Docker Compose configuration.
+Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
 ```bash
-cd /root/ethereum
+cd ~/ethereum
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
@@ -169,8 +169,8 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /root/ethereum/execution:/data
-      - /root/ethereum/jwt.hex:/data/jwt.hex
+      - /home/<your-username>/ethereum/execution:/data
+      - /home/<your-username>/ethereum/jwt.hex:/data/jwt.hex
     command:
       - --sepolia
       - --http
@@ -194,8 +194,8 @@ services:
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /root/ethereum/consensus:/data
-      - /root/ethereum/jwt.hex:/data/jwt.hex
+      - /home/<your-username>/ethereum/consensus:/data
+      - /home/<your-username>/ethereum/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
@@ -468,7 +468,6 @@ services:
       DATA_DIRECTORY: /data
       VALIDATOR_PRIVATE_KEY: 0XPrivateKey
       COINBASE: 0xPubliceKey
-      P2P_IP: your-public-IP
       LOG_LEVEL: debug
     entrypoint: >
       sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080'
