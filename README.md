@@ -124,26 +124,23 @@ newgrp docker
 ---
 
 ## Step 2. Create Directories
-These commands create the necessary directory structure for Ethereum's execution (/execution) and consensus (/consensus) clients under /root/ethereum, ensuring the paths exist for storing their respective data.
+These commands create the necessary directory structure for Ethereum's execution (/execution) and consensus (/consensus) clients under the /root/ethereum folder (used for running with sudo/root permissions):
 ```bash
-sudo mkdir -p /home/<user>/ethereum/execution
-sudo mkdir -p /home/<user>/ethereum/consensus
+sudo mkdir -p /root/ethereum/execution /root/ethereum/consensus
 ```
-> If you encounter permission issues using the `/root` directory, try using a directory inside your home folder (e.g., `/home/username/ethereum`). This avoids the need for superuser access and simplifies file management.
-
 
 ---
 
 ## Step 3. Generate the JWT secret:
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
-Generates a random 32-byte hexadecimal string using OpenSSL and saves it to the file /root/ethereum/jwt.hex with root permissions.
+
 ```bash
-sudo bash -c "openssl rand -hex 32 > /home/<user>/ethereum/jwt.hex"
+sudo bash -c "openssl rand -hex 32 > /root/ethereum/jwt.hex"
 ```
 Displays the contents of the /root/ethereum/jwt.hex file with root permissions.
 ```bash
-sudo cat /home/<user>/ethereum/jwt.hex
+sudo cat /root/ethereum/jwt.hex
 ```
 
 ---
@@ -151,12 +148,11 @@ sudo cat /home/<user>/ethereum/jwt.hex
 ## Step 4. Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the Docker Compose configuration.
 ```bash
-sudo mkdir ~/ethereum
-cd ~/ethereum
+cd /root/ethereum
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
-nano docker-compose.yml
+sudo nano docker-compose.yml
 ```
 Replace the following code into your `docker-compose.yml` file:
 ```yaml
@@ -173,8 +169,8 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /home/<user>/ethereum/execution:/data
-      - /home/<user>/ethereum/jwt.hex:/data/jwt.hex
+      - /root/ethereum/execution:/data
+      - /root/ethereum/jwt.hex:/data/jwt.hex
     command:
       - --sepolia
       - --http
@@ -198,8 +194,8 @@ services:
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /home/<user>/ethereum/consensus:/data
-      - /home/<user>/jwt.hex:/data/jwt.hex
+      - /root/ethereum/consensus:/data
+      - /root/ethereum/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
@@ -226,8 +222,6 @@ services:
         max-size: "10m"
         max-file: "3"
 ```
-
-> If you face permission or access issues with the `/root` directory in the Docker volumes, it's recommended to replace `/root/ethereum` with a path inside your home directory, such as `/home/username/ethereum`. This avoids requiring root privileges and makes managing files and permissions easier for regular users.
 
 
 ___
