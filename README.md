@@ -26,7 +26,7 @@ ___
 
 
 
-##  Suggested Hardware and Bandwidth Requirements
+##  Suggested Hardware & Bandwidth Requirements
 <table>
   <tr>
     <th colspan="4"> OS: Ubuntu 20.04 or later</th>
@@ -281,10 +281,10 @@ ___
 
 ## Step 8. Getting the RPC Endpoints
 ### Execution Node (Geth)
-* **Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
+Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
 
 ### Beacon Node (Prysm)
-* **Aztec Sequencer Consensus Beacon RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:3500` or `http://localhost:3500`
+Aztec Sequencer Consensus Beacon RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:3500` or `http://localhost:3500`
 
 
 ---
