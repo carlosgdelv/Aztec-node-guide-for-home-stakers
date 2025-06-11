@@ -582,7 +582,7 @@ curl -s -X POST -H 'Content-Type: application/json' \
 -d '{"jsonrpc":"2.0","method":"node_getL2Tips","params":[],"id":67}' \
 http://localhost:8080 | jq -r ".result.proven.number"
 ```
-~ Change `http://localhost:8080` with your VPS IP:8080
+Change `http://localhost:8080` with your VPS IP:8080
 You will get a BLOCK_NUMBER like `21000` for example, save it.
 
 Now run this:
