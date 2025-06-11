@@ -2,7 +2,7 @@
 
 ___
 
-## Reasons to Run Your Own Ethereum Node
+## Reasons to Run your Own Ethereum Node
 
 To operate an Aztec node reliably, it is necessary to also run your own Ethereum execution and consensus clients. Aztec depends on the Ethereum base layer for data availability and settlement, which means it constantly queries and submits transactions to Ethereum. By managing your own Ethereum clients, you ensure low-latency, high-availability RPC access, reducing the risk of downtime, rate-limiting, or outages caused by third-party providers. Past issues with public RPCs have led to Aztec nodes failing to sync or sequence correctly, so running self-hosted clients is the most resilient and technically sound approach.
 
@@ -242,7 +242,7 @@ docker compose logs -f
 ```
 ___
 
-## Step 7. Checking If Nodes Are Synced
+## Step 7. Checking If Nodes are Synced
 **Execution Node (Geth)**
 ```
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
@@ -306,7 +306,7 @@ mkdir -p ~/nodeaztec/aztec
 ___
 
 
-## Step 3. Add Aztec CLI to Your System PATH
+## Step 3. Add Aztec CLI to your System PATH
 This appends the Aztec binary path (`~/.aztec/bin`) to your PATH environment variable in the `.bashrc` file, so that your system can recognize the aztec command from any terminal.
 
 ```bash
@@ -375,7 +375,7 @@ hostname -I
 ___
 
 
-## Step 7. Port forwarding
+## Step 7. Port Forwarding
 
 Many internet providers use Carrier-Grade NAT (CG-NAT) to conserve IPv4 addresses. Under CG-NAT, multiple customers share a single public IP address, and your router is assigned a private IP by your ISP, not a true public one. As a result, you cannot receive unsolicited external connections or open ports properly, because incoming traffic cannot be uniquely routed to your home network.
 
