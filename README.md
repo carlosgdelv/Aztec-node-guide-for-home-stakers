@@ -26,20 +26,22 @@ ___
 
 
 
-##  Suggested Hardware Requirements
+##  Suggested Hardware and Bandwidth Requirements
 <table>
   <tr>
-    <th colspan="3"> OS: Ubuntu 20.04 or later</th>
+    <th colspan="4"> OS: Ubuntu 20.04 or later</th>
   </tr>
   <tr>
     <td>RAM</td>
     <td>CPU</td>
     <td>Disk</td>
+    <td>Bandwidth</td>
   </tr>
   <tr>
     <td><code>16 GB DDR5</code></td>
     <td><code>6-8 cores</code></td>
     <td><code>1.5 TB SSD</code></td>
+    <td><code>125 Mbps</code></td>
   </tr>
 </table>
 
