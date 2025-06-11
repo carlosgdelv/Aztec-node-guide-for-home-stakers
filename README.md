@@ -334,12 +334,12 @@ Reloads your `~/.bashrc` file into the current shell session, applying the updat
 ```bash
 source ~/.bashrc
 ```
-~ Now check if Aztec successfully installed
+Now check if Aztec successfully installed
 Runs the Aztec CLI with no arguments to verify that the command is available and prints its usage/help text, confirming a successful installation.
 ```bash
 aztec
 ```
-~ Then update Aztec to Alpha Testnet
+Then update Aztec to Alpha Testnet
 Switches or initializes your Aztec environment to the Alpha Testnet configuration, downloading any required network artifacts and setting your CLI to target that test network.
 ```bash
 aztec-up alpha-testnet
@@ -487,12 +487,12 @@ docker compose logs -f
 ___
 
 ## Step 9. Update Sequencer Node
-* 1- Stop node. Run `docker compose down` to stop and remove all running Aztec containers before updating.
+1- Stop node. Run `docker compose down` to stop and remove all running Aztec containers before updating.
 ```console
 docker compose down
 ```
 
-* 2- Update Node.
+2- Update Node.
 Run `aztec-up alpha-testnet` to fetch the latest configuration files for the Alpha Testnet environment.
 ```bash
 aztec-up alpha-testnet
@@ -502,13 +502,13 @@ Run `docker compose pull` to download the most recent Docker images defined in y
 docker compose pull
 ```
 
-* 3- Delete old data:
+3- Delete old data:
 This command forcefully deletes the entire Aztec alpha-testnet data directory and all its contents from your home folder to reset the node.
 ```bash
 rm -rf ~/.aztec/alpha-testnet/data/
 ```
 
-* 4- Re-run Node
+4- Re-run Node
 
 Return to Step 8 to re-run your node
 
@@ -573,7 +573,7 @@ sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-test
 
 ___
 
-## - Getting Apprentice Role:
+## Getting Apprentice Role:
 Head to Aztec Discord and go to `operator | start-here` channel
 Run command `/operator help` there
 Run this command:
