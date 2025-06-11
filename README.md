@@ -445,7 +445,7 @@ ___
 
 Changes your working directory to the `nodeaztec` folder where your Aztec node’s Docker Compose configuration is located.
 ```bash
-cd nodeaztec
+cd ~/nodeaztec
 ```
  Opens the `docker-compose.yml` file in the Nano text editor so you can define and configure all your containerized services.
 ```bash
