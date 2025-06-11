@@ -653,6 +653,10 @@ Lists all containers, including those that are stopped.
 ```bash
 docker ps -a
 ```
+It shows real-time metrics of running containers, including CPU, memory, network, and disk usage.
+```bash
+docker stats 
+```
 
 Stops the specified running container gracefully.
 ```bash
