@@ -561,7 +561,7 @@ yarn -v
 ___
 
 
-## Verify Node's Peer ID:
+## Verify Node's Peer ID
 **Find your Node's Peer ID:**
 ```bash
 sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-testnet | head -n 1) 2>&1 | grep -i "peerId" | grep -o '"peerId":"[^"]*"' | cut -d'"' -f4 | head -n 1
@@ -573,7 +573,7 @@ sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-test
 
 ___
 
-## Getting Apprentice Role:
+## Getting Apprentice Role
 Head to Aztec Discord and go to `operator | start-here` channel
 Run command `/operator help` there
 Run this command:
