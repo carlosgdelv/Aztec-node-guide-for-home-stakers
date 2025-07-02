@@ -309,7 +309,15 @@ mkdir -p ~/nodeaztec/aztec
 ___
 
 
-## Step 3. Add Aztec CLI to your System PATH
+
+## Step 3. Install Aztec
+Downloads and runs Aztec’s official installer script in an interactive Bash shell, installing the latest Aztec CLI tools.
+```bash
+bash -i <(curl -s https://install.aztec.network)
+```
+
+
+## Step 4. Add Aztec CLI to your System PATH
 This appends the Aztec binary path (`~/.aztec/bin`) to your PATH environment variable in the `.bashrc` file, so that your system can recognize the aztec command from any terminal.
 
 ```bash
@@ -324,19 +332,10 @@ source ~/.bashrc
 ___
 
 
-## Step 4. Install Aztec
-Downloads and runs Aztec’s official installer script in an interactive Bash shell, installing the latest Aztec CLI tools.
-```bash
-bash -i <(curl -s https://install.aztec.network)
-```
-Appends the Aztec binary directory to your shell’s `PATH` by updating your `~/.bashrc`, so you can run `aztec` from any location.
-```bash
-echo 'export PATH=$PATH:/root/.aztec/bin' >> ~/.bashrc
-```
-Reloads your `~/.bashrc` file into the current shell session, applying the updated `PATH` immediately without logging out and back in.
-```bash
-source ~/.bashrc
-```
+
+
+
+
 Now check if Aztec successfully installed
 Runs the Aztec CLI with no arguments to verify that the command is available and prints its usage/help text, confirming a successful installation.
 ```bash
