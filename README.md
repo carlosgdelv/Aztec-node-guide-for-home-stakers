@@ -16,6 +16,7 @@ Below you’ll find links to the official Aztec documentation, along with commun
 - https://docs.aztec.network/the_aztec_network/guides/run_nodes/how_to_run_sequencer
 - https://docs.aztec.network/the_aztec_network/guides/run_nodes/cli_reference
 - https://github.com/0xmoei/geth-prysm-node
+- https://github.com/0xmoei/aztec-network/blob/883a8ecc1772accef47c1a2f9d655d34889ad176/README.md#9-run-sequencer-node
 - https://github.com/frianowzki/aztec-sequencer-node
 - https://aztec.starfrich.me/
 - https://dashtec.xyz/
