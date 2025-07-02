@@ -403,7 +403,7 @@ To configure a DHCP reservation, you’ll need the MAC address of each PC, which
 
 MAC address
 ```bash
-`ip a`
+ip a
 ```
 
 
@@ -462,7 +462,7 @@ services:
   node:
     container_name: aztec-sequencer
     image: aztecprotocol/aztec:alpha-testnet
-    network_mode: host # Debe ir aquí, dentro del servicio
+    network_mode: host
     restart: unless-stopped
     environment:
       ETHEREUM_HOSTS: "http://localhost:8545"
