@@ -468,7 +468,7 @@ services:
       ETHEREUM_HOSTS: "http://localhost:8545"
       L1_CONSENSUS_HOST_URLS: "http://localhost:3500"
       DATA_DIRECTORY: /data
-      VALIDATOR_PRIVATE_KEYS: 0xPrivateKey1,0xPrivateKey2,0xPrivateKey3
+      VALIDATOR_PRIVATE_KEYS: "0xPrivateKey1,0xPrivateKey2,0xPrivateKey3"
       SEQ_PUBLISHER_PRIVATE_KEY: 0xPrivateKey1
       COINBASE: 0xPubliceKey
       GOVERNANCE_PAYLOAD: ${GOVERNANCE_PAYLOAD}
