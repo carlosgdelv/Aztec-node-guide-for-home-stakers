@@ -468,8 +468,10 @@ services:
       ETHEREUM_HOSTS: "http://localhost:8545"
       L1_CONSENSUS_HOST_URLS: "http://localhost:3500"
       DATA_DIRECTORY: /data
-      VALIDATOR_PRIVATE_KEY: 0XPrivateKey
+      VALIDATOR_PRIVATE_KEYS: 0xPrivateKey1,0xPrivateKey2,0xPrivateKey3
+      SEQ_PUBLISHER_PRIVATE_KEY: 0xPrivateKey1
       COINBASE: 0xPubliceKey
+      GOVERNANCE_PAYLOAD: ${GOVERNANCE_PAYLOAD}
       LOG_LEVEL: debug
     entrypoint: >
       sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080'
