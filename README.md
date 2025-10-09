@@ -130,7 +130,7 @@ newgrp docker
 ## Step 2. Create Directories
 These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
 ```bash
-mkdir -p ~/ethereum/execution ~/ethereum/consensus
+mkdir -p ~/ethereum-mainnet/execution ~/ethereum-mainnet/consensus
 ```
 
 ---
@@ -139,12 +139,12 @@ mkdir -p ~/ethereum/execution ~/ethereum/consensus
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
 ```bash
-openssl rand -hex 32 > ~/ethereum/jwt.hex
+openssl rand -hex 32 > ~/ethereum-mainnet/jwt.hex
 ```
 
 Prints the contents of the jwt.hex file to verify it was correctly generated.
 ```bash
-cat ~/ethereum/jwt.hex
+cat ~/ethereum-mainnet/jwt.hex
 ```
 
 ---
@@ -152,7 +152,7 @@ cat ~/ethereum/jwt.hex
 ## Step 4. Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
 ```bash
-cd ~/ethereum
+cd ~/ethereum-mainnet
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
@@ -173,10 +173,10 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /home/<your-username>/ethereum/execution:/data
-      - /home/<your-username>/ethereum/jwt.hex:/data/jwt.hex
+      - /home/<your-username>/ethereum-mainnet/execution:/data
+      - /home/<your-username>/ethereum-mainnet/jwt.hex:/data/jwt.hex
     command:
-      - --sepolia
+      - --mainnet
       - --http
       - --http.api=eth,net,web3
       - --http.addr=0.0.0.0
@@ -185,6 +185,8 @@ services:
       - --authrpc.jwtsecret=/data/jwt.hex
       - --authrpc.port=8551
       - --syncmode=snap
+      - --cache=8192
+      - --maxpeers=50
       - --datadir=/data
     logging:
       driver: "json-file"
@@ -198,15 +200,15 @@ services:
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /home/<your-username>/ethereum/consensus:/data
-      - /home/<your-username>/ethereum/jwt.hex:/data/jwt.hex
+      - /home/<your-username>/ethereum-mainnet/consensus:/data
+      - /home/<your-username>/ethereum-mainnet/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
       - 4000:4000
       - 3500:3500
     command:
-      - --sepolia
+      - --mainnet
       - --accept-terms-of-use
       - --datadir=/data
       - --disable-monitoring
@@ -218,8 +220,8 @@ services:
       - --grpc-gateway-host=0.0.0.0
       - --grpc-gateway-port=3500
       - --min-sync-peers=3
-      - --checkpoint-sync-url=https://checkpoint-sync.sepolia.ethpandaops.io
-      - --genesis-beacon-api-url=https://checkpoint-sync.sepolia.ethpandaops.io
+      - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
+      - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
     logging:
       driver: "json-file"
       options:
