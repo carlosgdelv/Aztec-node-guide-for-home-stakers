@@ -162,7 +162,7 @@ Replace the following code into your `docker-compose.yml` file:
 ```yaml
 services:
   geth:
-    image: ethereum/client-go:stable
+    image: ethereum/client-go:v1.16.4
     container_name: geth
     network_mode: host
     restart: unless-stopped
@@ -173,8 +173,8 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /home/<your-username>/ethereum-mainnet/execution:/data
-      - /home/<your-username>/ethereum-mainnet/jwt.hex:/data/jwt.hex
+      - /home/carlos/ethereum-mainnet/execution:/data
+      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
     command:
       - --mainnet
       - --http
@@ -195,13 +195,13 @@ services:
         max-file: "3"
 
   prysm:
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:v6.1.2
     container_name: prysm
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /home/<your-username>/ethereum-mainnet/consensus:/data
-      - /home/<your-username>/ethereum-mainnet/jwt.hex:/data/jwt.hex
+      - /home/carlos/ethereum-mainnet/consensus:/data
+      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
@@ -220,6 +220,7 @@ services:
       - --grpc-gateway-host=0.0.0.0
       - --grpc-gateway-port=3500
       - --min-sync-peers=3
+      - --subscribe-all-data-subnets
       - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
       - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
     logging:
