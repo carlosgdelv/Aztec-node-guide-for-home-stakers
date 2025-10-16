@@ -126,11 +126,25 @@ newgrp docker
 ```
 
 ---
+Paso 1:
+
+whoami       # → debe mostrar "carlos"
+id -u        # → debe mostrar "1000"
+id -g        # → debe mostrar "1000"
+
+sudo groupadd docker
+
+sudo usermod -aG docker carlos
+
+PASO 5: Reinicia la sesión o el sistema
+reboot
+
+
 
 ## Step 2. Create Directories
 These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
 ```bash
-mkdir -p ~/ethereum-mainnet/execution ~/ethereum-mainnet/consensus
+mkdir -p ~/ethereum/execution ~/ethereum/consensus
 ```
 
 ---
@@ -139,12 +153,12 @@ mkdir -p ~/ethereum-mainnet/execution ~/ethereum-mainnet/consensus
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
 ```bash
-openssl rand -hex 32 > ~/ethereum-mainnet/jwt.hex
+openssl rand -hex 32 > ~/ethereum/jwt.hex
 ```
 
 Prints the contents of the jwt.hex file to verify it was correctly generated.
 ```bash
-cat ~/ethereum-mainnet/jwt.hex
+cat ~/ethereum/jwt.hex
 ```
 
 ---
@@ -165,6 +179,7 @@ services:
     image: ethereum/client-go:v1.16.4
     container_name: geth
     network_mode: host
+    user: "1000:1000"
     restart: unless-stopped
     ports:
       - 30303:30303
@@ -173,8 +188,8 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /home/carlos/ethereum-mainnet/execution:/data
-      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
+      - /home/carlos/ethereum/execution:/data
+      - /home/carlos/ethereum/jwt.hex:/data/jwt.hex
     command:
       - --mainnet
       - --http
@@ -198,10 +213,11 @@ services:
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:v6.1.2
     container_name: prysm
     network_mode: host
+    user: "1000:1000"
     restart: unless-stopped
     volumes:
-      - /home/carlos/ethereum-mainnet/consensus:/data
-      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
+      - /home/carlos/ethereum/consensus:/data
+      - /home/carlos/ethereum/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
@@ -223,6 +239,8 @@ services:
       - --subscribe-all-data-subnets
       - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
       - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
+      - --checkpoint-sync-url=https://checkpoint-sync.sepolia.ethpandaops.io
+      - --genesis-beacon-api-url=https://checkpoint-sync.sepolia.ethpandaops.io
     logging:
       driver: "json-file"
       options:
