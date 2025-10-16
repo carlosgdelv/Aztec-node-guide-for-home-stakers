@@ -127,18 +127,30 @@ newgrp docker
 
 ---
 Paso 1:
+```bash
+whoami
+```  
+# → debe mostrar "carlos"
+```bash
+id -u
+```
 
-whoami       # → debe mostrar "carlos"
-id -u        # → debe mostrar "1000"
-id -g        # → debe mostrar "1000"
+# → debe mostrar "1000"
+```bash
+id -g        
+```
+# → debe mostrar "1000"
 
+```bash
 sudo groupadd docker
-
+```
+```bash
 sudo usermod -aG docker carlos
-
+```
 PASO 5: Reinicia la sesión o el sistema
+```bash
 reboot
-
+```
 
 
 ## Step 2. Create Directories
