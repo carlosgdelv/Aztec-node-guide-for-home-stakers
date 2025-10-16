@@ -178,7 +178,7 @@ cat ~/ethereum/jwt.hex
 ## Step 4. Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
 ```bash
-cd ~/ethereum-mainnet
+cd ~/ethereum
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
