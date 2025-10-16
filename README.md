@@ -113,37 +113,29 @@ sudo docker run hello-world
 sudo systemctl enable docker
 sudo systemctl restart docker
 ```
-Add Your User to the Docker Group
-Adds your current Linux user to the docker group so you can run Docker commands without using sudo.
-```bash
-sudo usermod -aG docker $USER
-```
-> Note: You must log out and log back in (or reboot) for this change to take effect in new terminals.
 
-Applies the new group membership immediately in the current terminal session without needing to log out.
-```bash
-newgrp docker
-```
 
 ---
-Paso 1:
+
+Add Your User to the Docker Group
+
+Debe mostrar "carlos"
 ```bash
 whoami
 ```  
-debe mostrar "carlos"
+Debe mostrar "1000"
 ```bash
 id -u
 ```
-
-debe mostrar "1000"
+Debe mostrar "1000"
 ```bash
 id -g        
 ```
-debe mostrar "1000"
-
+Tiene que decir: groupadd: el grupo «docker» ya existe
 ```bash
 sudo groupadd docker
 ```
+El siguiente comando agrega al usuario carlos al grupo docker para que pueda usar Docker sin sudo
 ```bash
 sudo usermod -aG docker carlos
 ```
