@@ -322,7 +322,7 @@ Aztec Sequencer Consensus Beacon RPC (Running by `docker-compose.yml`)**: `http:
 ---
 
 
-# Aztec-node
+# Aztec-node (Testnet)
 Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Aztec full node and Validator registration on an Ubuntu-based system.
 
 ___
@@ -518,8 +518,121 @@ Streams real-time combined logs from all running Compose services, letting you w
 ```bash
 docker compose logs -f
 ```
+Run `docker compose down` to stop and remove all running Aztec containers before updating.
+```bash
+docker compose down
+```
 
 ___
+
+# Aztec-node (Testnet 2.0.2)
+
+1. Crear las carpetas necesarias
+```bash
+mkdir -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
+```
+2. Crear archivo keystore.json (puede estar vacío si lo llenas luego)
+```bash
+nano ~/aztec-sequencer/keys/keystore.json
+```
+3. Crear el archivo .env
+```bash
+cd ~/aztec-sequencer
+touch .env
+nano .env
+```
+Y en `.env`, algo como esto (ajústalo si ya lo tienes):
+
+```bash
+DATA_DIRECTORY=./data
+KEY_STORE_DIRECTORY=./keys
+LOG_LEVEL=info
+ETHEREUM_HOSTS=[your L1 execution endpoint, or a comma separated list if you have multiple]
+L1_CONSENSUS_HOST_URLS=[your L1 consensus endpoint, or a comma separated list if you have multiple]
+P2P_IP=[your external IP address]
+P2P_PORT=40400
+AZTEC_PORT=8080
+AZTEC_ADMIN_PORT=8880
+```
+4. ✅ Asegúrate de que los permisos sean correctos
+```bash
+ls -l ~/aztec-sequencer
+ls -l ~/aztec-sequencer/keys
+```
+Eso es correcto si carlos tiene UID 1000. Para confirmarlo:
+```bash
+id carlos
+```
+5. 🛠️ Si por alguna razón los permisos no son correctos, arréglalo:
+```bash
+sudo chown -R 1000:1000 ~/aztec-sequencer
+```
+
+ Opens the `docker-compose.yml` file in the Nano text editor so you can define and configure all your containerized services.
+```bash
+nano docker-compose.yml
+```
+Replace the following code into your `docker-compose.yml` file:
+```yaml
+services:
+  aztec-sequencer:
+    image: "aztecprotocol/aztec:2.0.2"
+    container_name: "aztec-sequencer"
+    network_mode: host
+    user: "1000:1000"
+    ports:
+      - ${AZTEC_PORT}:${AZTEC_PORT}
+      - ${AZTEC_ADMIN_PORT}:${AZTEC_ADMIN_PORT}
+      - ${P2P_PORT}:${P2P_PORT}
+      - ${P2P_PORT}:${P2P_PORT}/udp
+    volumes:
+      - ${DATA_DIRECTORY}:/var/lib/data
+      - ${KEY_STORE_DIRECTORY}:/var/lib/keystore
+    environment:
+      KEY_STORE_DIRECTORY: /var/lib/keystore
+      DATA_DIRECTORY: /var/lib/data
+      LOG_LEVEL: ${LOG_LEVEL}
+      ETHEREUM_HOSTS: ${ETHEREUM_HOSTS}
+      L1_CONSENSUS_HOST_URLS: ${L1_CONSENSUS_HOST_URLS}
+      P2P_IP: ${P2P_IP}
+      P2P_PORT: ${P2P_PORT}
+      AZTEC_PORT: ${AZTEC_PORT}
+      AZTEC_ADMIN_PORT: ${AZTEC_ADMIN_PORT}
+    entrypoint: >-
+      node
+      --no-warnings
+      /usr/src/yarn-project/aztec/dest/bin/index.js
+      start
+      --node
+      --archiver
+      --sequencer
+      --network testnet
+    restart: always
+```
+✅ Paso 7: Asegurar permisos en los directorios montados
+
+Verifica que los directorios locales (./data y ./keys) tienen permisos para el UID 1000:
+```bash
+sudo chown -R 1000:1000 ~/aztec-sequencer/data
+sudo chown -R 1000:1000 ~/aztec-sequencer/keys
+```
+
+Starts all services defined in your `docker-compose.yml` in the background (detached mode)
+```bash
+docker compose up -d
+```
+Streams real-time combined logs from all running Compose services, letting you watch your nodes’ output and troubleshoot as they run.
+```bash
+docker compose logs -f
+```
+Run `docker compose down` to stop and remove all running Aztec containers before updating.
+```bash
+docker compose down
+```
+
+___
+
+
 
 ## Step 9. Update Sequencer Node
 1- Stop node. 
