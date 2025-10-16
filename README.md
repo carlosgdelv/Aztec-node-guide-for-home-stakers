@@ -268,6 +268,12 @@ Continuously displays the real-time logs from both containers.
 ```bash
 docker compose logs -f
 ```
+Stop node. 
+Run `docker compose down` to stop and remove all running Aztec containers before updating.
+```bash
+docker compose down
+```
+
 ___
 
 ## Step 7. Checking If Nodes are Synced
@@ -516,8 +522,9 @@ docker compose logs -f
 ___
 
 ## Step 9. Update Sequencer Node
-1- Stop node. Run `docker compose down` to stop and remove all running Aztec containers before updating.
-```console
+1- Stop node. 
+Run `docker compose down` to stop and remove all running Aztec containers before updating.
+```bash
 docker compose down
 ```
 
