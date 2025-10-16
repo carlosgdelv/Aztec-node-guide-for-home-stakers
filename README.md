@@ -130,16 +130,16 @@ Paso 1:
 ```bash
 whoami
 ```  
-# → debe mostrar "carlos"
+debe mostrar "carlos"
 ```bash
 id -u
 ```
 
-# → debe mostrar "1000"
+debe mostrar "1000"
 ```bash
 id -g        
 ```
-# → debe mostrar "1000"
+debe mostrar "1000"
 
 ```bash
 sudo groupadd docker
@@ -147,7 +147,7 @@ sudo groupadd docker
 ```bash
 sudo usermod -aG docker carlos
 ```
-PASO 5: Reinicia la sesión o el sistema
+Reinicia la sesión o el sistema
 ```bash
 reboot
 ```
