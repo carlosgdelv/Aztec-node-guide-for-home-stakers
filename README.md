@@ -554,6 +554,13 @@ P2P_PORT=40400
 AZTEC_PORT=8080
 AZTEC_ADMIN_PORT=8880
 ```
+
+Este comando muestra en la terminal el contenido del archivo `.env`.
+```bash
+cat .env
+```
+
+
 4. ✅ Asegúrate de que los permisos sean correctos
 ```bash
 ls -l ~/aztec-sequencer
