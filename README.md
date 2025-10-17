@@ -289,11 +289,12 @@ sudo ss -tulnp
 # 1. Permitir acceso SSH (solo si usas SSH, si no, omítelo)
 sudo ufw allow OpenSSH
 
-# 2. Permitir tráfico P2P necesario
-sudo ufw allow 30303/tcp      # Geth P2P
-sudo ufw allow 30303/udp      # Geth P2P
-sudo ufw allow 13000/tcp      # Prysm P2P
-sudo ufw allow 12000/udp      # Prysm gossip/block sync
+# 2. Permitir tráfico P2P necesario Geth P2P, Geth P2P, Prysm P2P, Prysm gossip/block sync
+
+sudo ufw allow 30303/tcp      
+sudo ufw allow 30303/udp      
+sudo ufw allow 13000/tcp     
+sudo ufw allow 12000/udp      
 
 # 3. Política por defecto: bloquear tráfico entrante
 sudo ufw default deny incoming
