@@ -160,6 +160,11 @@ Generates a 32-byte random JWT secret in hexadecimal format and saves it to a fi
 openssl rand -hex 32 > ~/ethereum/jwt.hex
 ```
 
+Proteger el JWT secret con permisos estrictos
+```bash
+chmod 600 /home/carlos/ethereum/jwt.hex
+```
+
 Prints the contents of the jwt.hex file to verify it was correctly generated.
 ```bash
 cat ~/ethereum/jwt.hex
