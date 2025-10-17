@@ -278,7 +278,7 @@ Run `docker compose down` to stop and remove all running Aztec containers before
 ```bash
 docker compose down
 ```
-## Step 7. Ports
+## Step 7. UFW
 
 
 ✅ Aplicar reglas UFW:
