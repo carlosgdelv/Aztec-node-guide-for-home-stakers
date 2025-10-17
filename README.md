@@ -278,10 +278,37 @@ Run `docker compose down` to stop and remove all running Aztec containers before
 ```bash
 docker compose down
 ```
+## Step 7. Ports
+
+Used Ports 
+```bash
+sudo ss -tulnp
+```
+✅ Tu lista UFW actual:
+```bash
+# 1. Permitir acceso SSH (solo si usas SSH, si no, omítelo)
+sudo ufw allow OpenSSH
+
+# 2. Permitir tráfico P2P necesario
+sudo ufw allow 30303/tcp      # Geth P2P
+sudo ufw allow 30303/udp      # Geth P2P
+sudo ufw allow 13000/tcp      # Prysm P2P
+sudo ufw allow 12000/udp      # Prysm gossip/block sync
+
+# 3. Política por defecto: bloquear tráfico entrante
+sudo ufw default deny incoming
+
+# 4. Permitir tráfico saliente
+sudo ufw default allow outgoing
+
+# 5. Activar el firewall
+sudo ufw enable
+
+```
 
 ___
 
-## Step 7. Checking If Nodes are Synced
+## Step 8. Checking If Nodes are Synced
 **Execution Node (Geth)**
 ```
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
@@ -316,7 +343,7 @@ ___
 
 
 
-## Step 8. Getting the RPC Endpoints
+## Step 9. Getting the RPC Endpoints
 ### Execution Node (Geth)
 Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
 
