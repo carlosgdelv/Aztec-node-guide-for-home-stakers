@@ -198,8 +198,8 @@ services:
       - --mainnet
       - --http
       - --http.api=eth,net,web3
-      - --http.addr=0.0.0.0
-      - --authrpc.addr=0.0.0.0
+      - --http.addr=127.0.0.1
+      - --authrpc.addr=127.0.0.1
       - --authrpc.vhosts=*
       - --authrpc.jwtsecret=/data/jwt.hex
       - --authrpc.port=8551
@@ -232,12 +232,12 @@ services:
       - --accept-terms-of-use
       - --datadir=/data
       - --disable-monitoring
-      - --rpc-host=0.0.0.0
+      - --rpc-host=127.0.0.1
       - --execution-endpoint=http://127.0.0.1:8551
       - --jwt-secret=/data/jwt.hex
       - --rpc-port=4000
       - --grpc-gateway-corsdomain=*
-      - --grpc-gateway-host=0.0.0.0
+      - --grpc-gateway-host=127.0.0.1
       - --grpc-gateway-port=3500
       - --min-sync-peers=3
       - --subscribe-all-data-subnets
