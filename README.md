@@ -309,6 +309,10 @@ Used Ports
 ```bash
 sudo ss -tulnp
 ```
+UFW rules
+```bash
+sudo ufw status verbose
+```
 
 ___
 
