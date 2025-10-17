@@ -280,11 +280,9 @@ docker compose down
 ```
 ## Step 7. Ports
 
-Used Ports 
-```bash
-sudo ss -tulnp
-```
-✅ Tu lista UFW actual:
+
+✅ Aplicar reglas UFW:
+
 ```bash
 # 1. Permitir acceso SSH (solo si usas SSH, si no, omítelo)
 sudo ufw allow OpenSSH
@@ -305,6 +303,11 @@ sudo ufw default allow outgoing
 # 5. Activar el firewall
 sudo ufw enable
 
+```
+
+Used Ports 
+```bash
+sudo ss -tulnp
 ```
 
 ___
