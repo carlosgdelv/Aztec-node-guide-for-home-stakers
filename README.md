@@ -429,6 +429,9 @@ sudo ufw enable
 # Sequencer
 sudo ufw allow 40400
 sudo ufw allow 8080
+
+sudo ufw allow 40400/tcp  # Permitir el puerto 40400 para Aztec (Sequencer)
+sudo ufw allow 8080/tcp   # Permitir el puerto 8080 (posiblemente para administración o API de Aztec)
 ```
 
 ## Step 6. Check Your Public and Local IPs
