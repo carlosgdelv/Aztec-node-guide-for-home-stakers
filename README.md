@@ -602,7 +602,32 @@ Este comando muestra en la terminal el contenido del archivo `.env`.
 ```bash
 cat .env
 ```
+CREA LA AZTEC ADDRESS
 
+Aztec CLI installed:
+```bash
+bash -i <(curl -s https://install.aztec.network)
+```
+Ejecuta este comando en tu terminal para añadir temporalmente el directorio al PATH en esta sesión actual:
+```bash
+export PATH="$HOME/.aztec/bin:$PATH"
+```
+The testnet version installed:
+```bash
+aztec-up -v latest
+```
+Set the required environment variables:
+```bash
+export NODE_URL=https://aztec-testnet-fullnode.zkv.xyz
+export SPONSORED_FPC_ADDRESS=0x299f255076aa461e4e94a843f0275303470a6b8ebe7cb44a471c66711151e529
+```
+Unlike sandbox, testnet has no pre-deployed accounts. You need to create your own:
+```bash
+aztec-wallet create-account \
+    --register-only \
+    --node-url $NODE_URL \
+    --alias my-wallet
+```
 
 4. ✅ Asegúrate de que los permisos sean correctos
 ```bash
