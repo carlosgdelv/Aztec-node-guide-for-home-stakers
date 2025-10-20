@@ -602,7 +602,8 @@ Este comando muestra en la terminal el contenido del archivo `.env`.
 ```bash
 cat .env
 ```
-CREA LA AZTEC ADDRESS
+
+4. CREA LA AZTEC ADDRESS
 
 Aztec CLI installed:
 ```bash
@@ -628,8 +629,174 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
+5. ✅ KEYSTORE ENCRYPTION
+# 1️⃣ Crear carpeta para tus claves
+```bash
+mkdir -m 700 -p ~/aztec/keys
+```
+# 2️⃣ Crear un archivo con tu private key (sin 0x)
+```bash
+printf "aabb...887799" > /tmp/privatekey.txt
+chmod 600 /tmp/privatekey.txt
+```
+# 3️⃣ Crear un archivo con la contraseña de cifrado
+Desactivar historial del shell (evita que los comandos se guarden en ~/.bash_history)
+```bash
+set +o history
+```
+Generar y mostrar la passphrase de 10 palabras UNA SOLA VEZ (no se guarda en variable ni en fichero):
+```bash
+grep -E '^[a-z]{5,}$' /usr/share/dict/words | shuf -n 10 | paste -sd ' ' -
+```
+# APUNTA LA CONTRASEÑA EN PAPEL
 
-4. ✅ Asegúrate de que los permisos sean correctos
+read -s -p "Apunta la passphrase en papel y pulsa ENTER para continuar..." ; echo
+
+# limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
+
+```bash
+printf '\033c'   # resetea la terminal
+printf '\e[3J'   # borra buffer de scrollback (muchos emuladores lo soportan)
+clear
+```
+
+```bash
+set -o history
+```
+
+```bash
+read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
+echo
+printf "%s" "$PASSWORD" > ~/aztec/password.txt
+chmod 600 ~/aztec/password.txt
+unset PASSWORD
+```
+
+Comprobar permisos del archivo (NO muestra la passphrase)
+```bash
+ls -l ~/aztec/password.txt
+wc -c ~/aztec/password.txt   # muestra longitud en bytes (no revela contenido)
+```
+
+# 4️⃣ Importar la private key como keystore cifrado
+```bash
+geth account import --keystore ~/aztec/keys --password ~/aztec/password.txt /tmp/privatekey.txt
+```
+# 5️⃣ Borrar el archivo temporal con la private key
+```bash
+shred -u /tmp/privatekey.txt
+```
+💾 Esto te creará un archivo tipo:
+
+perl
+Copiar código
+~/aztec/keys/UTC--2025-10-16T22-40-30.000Z--0xabcdef1234567890.json
+Ese archivo ya contiene tu private key encriptada con tu contraseña.
+
+
+🧰 Paso 2 — Configura tu validators.json
+Edita tu JSON para que apunte a ese archivo y a la contraseña:
+
+json
+Copiar código
+{
+  "schemaVersion": 1,
+  "validators": [
+    {
+      "attester": {
+        "path": "/home/usuario/aztec/keys/UTC--2025-10-16T22-40-30.000Z--0xabcdef1234567890.json",
+        "password_file": "/home/usuario/aztec/password.txt"
+      },
+      "feeRecipient": "0xabcdef1234567890abcdef1234567890abcdef12"
+    }
+  ]
+}
+🔑 OJO:
+Usa "password_file" (no "password") si el software lo permite — así no dejas la contraseña escrita en el JSON en plain text.
+
+Si solo acepta "password", puedes dejarla en claro, pero es menos seguro.
+
+🧩 Paso 3 — Permisos de seguridad
+bash
+Copiar código
+```bash
+chmod 700 ~/aztec/keys
+chmod 600 ~/aztec/keys/*
+chmod 600 ~/aztec/password.txt
+Así solo tú puedes leer esos archivos.
+```
+
+🧩 Paso 4 — Verifica que el keystore esté correcto
+
+Esto muestra la dirección pública asociada al keystore:
+```bash
+geth account list --keystore ~/aztec/keys
+```
+
+```bash
+cat ~/aztec/keys/UTC--....json | jq .crypto.kdfparams
+```
+
+✅ 6. Verificar que la cuenta fue importada correctamente
+
+```bash
+geth account list --keystore ~/aztec/keys
+```
+Paso 5. — Verificar seguridad del cifrado del keystore
+
+Extraer los parámetros KDF (scrypt):
+```bash
+jq .crypto.kdfparams ~/aztec/keys/UTC--*.json
+```
+
+# comprobar permisos del password file
+```bash
+ls -l ~/aztec/password.txt
+```
+
+# comprobar si el archivo password.txt contiene salto de línea (no debería)
+```bash
+hexdump -C ~/aztec/password.txt | tail -n1
+```
+# si termina en 0a => salto de línea, reescribir con printf
+
+Valores recomendados:
+"n" ≥ 262144 (cuanto más alto, más lento el brute force)
+"r" ≥ 8
+"p" ≥ 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6. ✅ Asegúrate de que los permisos sean correctos
 ```bash
 ls -l ~/aztec-sequencer
 ls -l ~/aztec-sequencer/keys
@@ -638,12 +805,12 @@ Eso es correcto si carlos tiene UID 1000. Para confirmarlo:
 ```bash
 id carlos
 ```
-5. 🛠️ Si por alguna razón los permisos no son correctos, arréglalo:
+7. 🛠️ Si por alguna razón los permisos no son correctos, arréglalo:
 ```bash
 sudo chown -R 1000:1000 ~/aztec-sequencer
 ```
 
- Opens the `docker-compose.yml` file in the Nano text editor so you can define and configure all your containerized services.
+8. Opens the `docker-compose.yml` file in the Nano text editor so you can define and configure all your containerized services.
 ```bash
 nano docker-compose.yml
 ```
@@ -684,7 +851,7 @@ services:
       --network testnet
     restart: always
 ```
-✅ Paso 7: Asegurar permisos en los directorios montados
+✅ Paso 9: Asegurar permisos en los directorios montados
 
 Verifica que los directorios locales (./data y ./keys) tienen permisos para el UID 1000:
 ```bash
@@ -709,7 +876,7 @@ ___
 
 
 
-## Step 9. Update Sequencer Node
+## Step 10. Update Sequencer Node
 1- Stop node. 
 Run `docker compose down` to stop and remove all running Aztec containers before updating.
 ```bash
@@ -741,7 +908,7 @@ Return to Step 8 to re-run your node
 ___
 
 
-## Step 10. Register Validator
+## Step 11. Register Validator
 Make sure your Sequencer node is fully synced, before you proceed with Validator registration
 ```bash
 aztec add-l1-validator \
