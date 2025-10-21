@@ -1069,11 +1069,55 @@ sudo rm -rf /var/lib/docker
 sudo rm -rf /var/lib/containerd
 ```
 
+___
 
+## 🔧 Extending Disk Space on a Linux VM (LVM + SSD)
 
+1. Update system and install LVM tools
+Install the LVM2 utilities required to manage logical volumes.
+```bash
+sudo apt update
+sudo apt install lvm2 -y
+```
 
+2. Wipe all data and prepare the new disk
+Remove all existing filesystem/partition data and initialize the disk as a physical volume.
+```bash
+sudo wipefs --all /dev/nvme1n1
+sudo sgdisk --zap-all /dev/nvme1n1
+sudo pvcreate /dev/nvme1n1
+```
 
+3. Add the new disk to the existing volume group
+Extend your volume group (ubuntu-vg) to include the new disk.
+```bash
+sudo vgextend ubuntu-vg /dev/nvme1n1
+```
 
+4. Confirm volume group changes
+Check that the volume group now contains the new physical volume.
+```bash
+sudo vgs
+```
 
-
-
+5. Extend the logical volume to use all free space
+Grow the logical volume (ubuntu-lv) with all available space from the volume group.
+```bash
+sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+```
+6. Resize the filesystem
+Expand the filesystem to match the new size of the logical volume.
+```bash
+sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+```
+7. Verify the changes
+Check the updated disk space and filesystem type.
+```bash
+df -h /
+df -T /
+```
+8. Optional: View detailed LV info
+Display full details of the extended logical volume.
+```bash
+sudo lvdisplay /dev/ubuntu-vg/ubuntu-lv
+```
