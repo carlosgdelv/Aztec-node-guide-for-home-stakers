@@ -654,8 +654,8 @@ read -s -p "Apunta la passphrase en papel y pulsa ENTER para continuar..." ; ech
 
 5️⃣ Limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
 ```bash
-printf '\033c'   # resetea la terminal
-printf '\e[3J'   # borra buffer de scrollback (muchos emuladores lo soportan)
+printf '\033c'
+printf '\e[3J' 
 clear
 ```
 6️⃣ Restaura historial del shell:
@@ -667,7 +667,7 @@ set -o history
 read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
 echo
 printf "%s" "$PASSWORD" > ~/aztec-sequencer/password.txt
-chmod 600 ~/aztec/password.txt
+chmod 600 ~/aztec-sequencer/password.txt
 unset PASSWORD
 ```
 8️⃣ Verifica que no haya salto de línea
@@ -761,10 +761,6 @@ jq -r .address ~/aztec-sequencer/keys/UTC--*.json
 ```
 
 ✅ Verifica los parámetros de cifrado KDF:
-```bash
-jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
-```
-✅ Extraer los parámetros KDF (scrypt):
 ```bash
 jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
 ```
