@@ -678,7 +678,7 @@ hexdump -C ~/aztec-sequencer/password.txt | tail -n1
 9️⃣ Comprobar permisos del archivo (NO muestra la passphrase)
 ```bash
 ls -l ~/aztec/password.txt
-wc -c ~/aztec/password.txt   # muestra longitud en bytes (no revela contenido)
+wc -c ~/aztec/password.txt
 ```
 
 🔟 Importar la private key como keystore cifrado
