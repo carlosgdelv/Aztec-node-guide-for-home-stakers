@@ -582,8 +582,11 @@ nano ~/aztec-sequencer/keys/keystore.json
 ```bash
 cd ~/aztec-sequencer
 touch .env
+```
+```bash
 nano .env
 ```
+
 Y en `.env`, algo como esto (ajústalo si ya lo tienes):
 
 ```bash
