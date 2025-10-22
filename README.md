@@ -762,16 +762,16 @@ Extraer los parámetros KDF (scrypt):
 jq .crypto.kdfparams ~/aztec/keys/UTC--*.json
 ```
 
-# comprobar permisos del password file
+Comprobar permisos del password file
 ```bash
 ls -l ~/aztec/password.txt
 ```
 
-# comprobar si el archivo password.txt contiene salto de línea (no debería)
+Comprobar si el archivo password.txt contiene salto de línea (no debería)
 ```bash
 hexdump -C ~/aztec/password.txt | tail -n1
 ```
-# si termina en 0a => salto de línea, reescribir con printf
+Si termina en 0a => salto de línea, reescribir con printf
 
 Valores recomendados:
 "n" ≥ 262144 (cuanto más alto, más lento el brute force)
@@ -796,7 +796,7 @@ id carlos
 sudo chown -R 1000:1000 ~/aztec-sequencer
 ```
 
-🐳 8. Configura docker-compose.yml.
+## 🐳 8. Configura docker-compose.yml.
 Edita:
 ```bash
 nano docker-compose.yml
