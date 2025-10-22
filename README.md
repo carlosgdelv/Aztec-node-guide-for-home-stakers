@@ -603,7 +603,7 @@ Este comando muestra en la terminal el contenido del archivo `.env`.
 cat .env
 ```
 
-4. CREA LA AZTEC ADDRESS
+## 4. CREA LA AZTEC ADDRESS
 
 Aztec CLI installed:
 ```bash
