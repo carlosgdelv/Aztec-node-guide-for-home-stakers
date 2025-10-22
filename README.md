@@ -640,7 +640,7 @@ printf "aabb...887799" > /tmp/privatekey.txt
 chmod 600 /tmp/privatekey.txt
 ```
 2️⃣ Crear un archivo con la contraseña de cifrado
-Desactivar historial del shell (evita que los comandos se guarden en ~/.bash_history)
+Desactivar historial del shell (evita que los comandos se guarden en `~/.bash_history`)
 ```bash
 set +o history
 ```
@@ -688,23 +688,26 @@ wc -c ~/aztec/password.txt   # muestra longitud en bytes (no revela contenido)
 ```bash
 geth account import --keystore ~/aztec-sequencer/keys --password ~/aztec-sequencer/password.txt /tmp/privatekey.txt
 ```
+
 ⓫ Eliminar la private key temporal
 ```bash
 shred -u /tmp/privatekey.txt
 ```
+🔍 Cómo saber exactamente qué archivo se creó (y su path)
 
-# No entiendo esto
-💾 Esto te creará un archivo tipo:
-
-perl
-Copiar código
-~/aztec/keys/UTC--2025-10-16T22-40-30.000Z--0xabcdef1234567890.json
-Ese archivo ya contiene tu private key encriptada con tu contraseña.
-
+Directamente desde geth con la lista de cuentas
+```bash
+geth account list --keystore ~/aztec-sequencer/keys
+```
+Verás algo como:
+```bash
+Account #0: {0xabcdef1234567890} /home/usuario/aztec-sequencer/keys/UTC--2025-10-22T17-41-12.123Z--0xabcdef1234567890.json
+```
+Ese segundo valor es exactamente el `path` que tienes que usar en tu `validators.json`.
 
 📄 Paso 2 — Configurar tu validators.json
 
-Edita tu JSON para que apunte a ese archivo y a la contraseña. Si solo attester está cifrado, y los demás roles (coinbase, publisher) están en texto plano, quedaría así:
+Edita tu JSON para que apunte a ese archivo y a la contraseña. Si solo attester está cifrado, y los demás roles (`coinbase`, `publisher`) están en texto plano, quedaría así:
 
 ```bash
 {
@@ -739,13 +742,25 @@ chmod 600 ~/aztec-sequencer/password.txt
 
 🧪 4. Verificaciones
 
+✅ Verifica que el archivo existe
+
+```bash
+ls ~/aztec-sequencer/keys/UTC--*
+```
+
 ✅ Verifica que el keystore fue importado:
 ```bash
 geth account list --keystore ~/aztec-sequencer/keys
 ```
+
 ✅ Verifica que el archivo validators.json está bien formado:
 ```bash
 jq . ~/aztec-sequencer/validators.json
+```
+
+✅ Verifica que puedes leer la dirección desde el JSON
+```bash
+jq -r .address ~/aztec-sequencer/keys/UTC--*.json
 ```
 
 ✅ Verifica los parámetros de cifrado KDF:
@@ -758,8 +773,6 @@ jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
 ```bash
 geth account list --keystore ~/aztec/keys
 ```
-✅  Verificar seguridad del cifrado del keystore
-
 ✅ Extraer los parámetros KDF (scrypt):
 ```bash
 jq .crypto.kdfparams ~/aztec/keys/UTC--*.json
