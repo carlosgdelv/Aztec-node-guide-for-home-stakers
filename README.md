@@ -755,19 +755,19 @@ jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
 ```bash
 geth account list --keystore ~/aztec/keys
 ```
-Paso 5. — Verificar seguridad del cifrado del keystore
+✅  Verificar seguridad del cifrado del keystore
 
-Extraer los parámetros KDF (scrypt):
+✅ Extraer los parámetros KDF (scrypt):
 ```bash
 jq .crypto.kdfparams ~/aztec/keys/UTC--*.json
 ```
 
-Comprobar permisos del password file
+✅  Comprobar permisos del password file
 ```bash
 ls -l ~/aztec/password.txt
 ```
 
-Comprobar si el archivo password.txt contiene salto de línea (no debería)
+✅ Comprobar si el archivo password.txt contiene salto de línea (no debería)
 ```bash
 hexdump -C ~/aztec/password.txt | tail -n1
 ```
@@ -779,7 +779,7 @@ Valores recomendados:
 "p" ≥ 1
 
 
-🔧 5. Permisos de directorios y usuario
+🔧 Permisos de directorios y usuario
 Verifica:
 ```bash
 ls -l ~/aztec-sequencer
@@ -787,11 +787,11 @@ ls -l ~/aztec-sequencer/keys
 id $USER
 
 ```
-Eso es correcto si carlos tiene UID 1000. Para confirmarlo:
+✅ Eso es correcto si carlos tiene UID 1000. Para confirmarlo:
 ```bash
 id carlos
 ```
-7. 🛠️ Si por alguna razón los permisos no son correctos, arréglalo:
+🛠️ Si por alguna razón los permisos no son correctos, arréglalo:
 ```bash
 sudo chown -R 1000:1000 ~/aztec-sequencer
 ```
