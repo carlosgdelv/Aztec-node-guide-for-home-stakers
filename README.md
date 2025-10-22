@@ -632,7 +632,7 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-5. # ✅ KEYSTORE ENCRYPTION
+# ✅ KEYSTORE ENCRYPTION
 
 1️⃣ Crear carpeta para tus claves
 ```bash
