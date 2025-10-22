@@ -262,18 +262,18 @@ ___
 
 ## Step 6. Run Geth & Prysm Nodes
 
-Start Geth & Prysm Nodes:
+▶️ Start Geth & Prysm Nodes:
 Starts the Geth and Prysm containers in detached mode (running in the background).
 ```bash
 docker compose up -d
 ```
 
-Node Logs
+🧾 Node Logs
 Continuously displays the real-time logs from both containers.
 ```bash
 docker compose logs -f
 ```
-Stop node. 
+⛔ Stop node. 
 Run `docker compose down` to stop and remove all running Aztec containers before updating.
 ```bash
 docker compose down
@@ -553,15 +553,15 @@ services:
       - /root/.aztec/alpha-testnet/data/:/data
 
 ```
-Starts all services defined in your `docker-compose.yml` in the background (detached mode)
+▶️ Starts all services defined in your `docker-compose.yml` in the background (detached mode)
 ```bash
 docker compose up -d
 ```
-Streams real-time combined logs from all running Compose services, letting you watch your nodes’ output and troubleshoot as they run.
+🧾 Streams real-time combined logs from all running Compose services, letting you watch your nodes’ output and troubleshoot as they run.
 ```bash
 docker compose logs -f
 ```
-Run `docker compose down` to stop and remove all running Aztec containers before updating.
+⛔ Run `docker compose down` to stop and remove all running Aztec containers before updating.
 ```bash
 docker compose down
 ```
@@ -697,7 +697,7 @@ geth account import --keystore ~/aztec-sequencer/keys --password ~/aztec-sequenc
 shred -u /tmp/privatekey.txt
 ```
 
-# NO ENTIENDO ESTO
+# No entiendo esto
 💾 Esto te creará un archivo tipo:
 
 perl
@@ -706,7 +706,8 @@ Copiar código
 Ese archivo ya contiene tu private key encriptada con tu contraseña.
 
 
-📄 Paso 2 — ConfiguraR tu validators.json
+📄 Paso 2 — Configurar tu validators.json
+
 Edita tu JSON para que apunte a ese archivo y a la contraseña:
 
 ```bash
@@ -731,6 +732,8 @@ Usa "password_file" (no "password") si el software lo permite — así no dejas 
 
 🛡️ Paso 3 — Seguridad de archivos
 bash
+
+
 Aplica permisos estrictos:
 ```bash
 chmod 700 ~/aztec-sequencer/keys
@@ -774,12 +777,14 @@ hexdump -C ~/aztec/password.txt | tail -n1
 Si termina en 0a => salto de línea, reescribir con printf
 
 Valores recomendados:
+```bash
 "n" ≥ 262144 (cuanto más alto, más lento el brute force)
 "r" ≥ 8
 "p" ≥ 1
-
+```
 
 🔧 Permisos de directorios y usuario
+
 Verifica:
 ```bash
 ls -l ~/aztec-sequencer
@@ -787,7 +792,9 @@ ls -l ~/aztec-sequencer/keys
 id $USER
 
 ```
-✅ Eso es correcto si carlos tiene UID 1000. Para confirmarlo:
+✅ Eso es correcto si carlos tiene UID 1000. 
+
+Para confirmarlo:
 ```bash
 id carlos
 ```
@@ -796,7 +803,7 @@ id carlos
 sudo chown -R 1000:1000 ~/aztec-sequencer
 ```
 
-## 🐳 8. Configura docker-compose.yml.
+## 🐳 8. Configura docker-compose.yml
 Edita:
 ```bash
 nano docker-compose.yml
