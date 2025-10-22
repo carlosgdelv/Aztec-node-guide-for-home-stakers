@@ -574,10 +574,7 @@ ___
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
 ```
-2. Crear archivo keystore.json (puede estar vacío si lo llenas luego)
-```bash
-nano ~/aztec-sequencer/keys/keystore.json
-```
+
 3. Crear el archivo .env
 ```bash
 cd ~/aztec-sequencer
@@ -669,7 +666,7 @@ set -o history
 ```bash
 read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
 echo
-printf "%s" "$PASSWORD" > ~/aztec/password.txt
+printf "%s" "$PASSWORD" > ~/aztec-sequencer/password.txt
 chmod 600 ~/aztec/password.txt
 unset PASSWORD
 ```
@@ -767,25 +764,19 @@ jq -r .address ~/aztec-sequencer/keys/UTC--*.json
 ```bash
 jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
 ```
-
-✅ 5. Verificar que la cuenta fue importada correctamente
-
-```bash
-geth account list --keystore ~/aztec/keys
-```
 ✅ Extraer los parámetros KDF (scrypt):
 ```bash
-jq .crypto.kdfparams ~/aztec/keys/UTC--*.json
+jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
 ```
 
 ✅  Comprobar permisos del password file
 ```bash
-ls -l ~/aztec/password.txt
+ls -l ~/aztec-sequencer/password.txt
 ```
 
 ✅ Comprobar si el archivo password.txt contiene salto de línea (no debería)
 ```bash
-hexdump -C ~/aztec/password.txt | tail -n1
+hexdump -C ~/aztec-sequencer/password.txt | tail -n1
 ```
 Si termina en 0a => salto de línea, reescribir con printf
 
