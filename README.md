@@ -632,43 +632,44 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-5. ✅ KEYSTORE ENCRYPTION
-# 1️⃣ Crear carpeta para tus claves
+5. # ✅ KEYSTORE ENCRYPTION
+
+1️⃣ Crear carpeta para tus claves
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys
 ```
-# 2️⃣ Crear un archivo con tu private key (sin 0x)
+2️⃣ Crear un archivo con tu private key (sin 0x)
 ```bash
 printf "aabb...887799" > /tmp/privatekey.txt
 chmod 600 /tmp/privatekey.txt
 ```
-# 3️⃣ Crear un archivo con la contraseña de cifrado
+3️⃣ Crear un archivo con la contraseña de cifrado
 Desactivar historial del shell (evita que los comandos se guarden en ~/.bash_history)
 ```bash
 set +o history
 ```
-Generar y mostrar la passphrase de 10 palabras UNA SOLA VEZ (no se guarda en variable ni en fichero):
+4️⃣ Generar y mostrar la passphrase de 10 palabras UNA SOLA VEZ (no se guarda en variable ni en fichero):
 ```bash
 grep -E '^[a-z]{5,}$' /usr/share/dict/words | shuf -n 10 | paste -sd ' ' -
 ```
-# APUNTA LA CONTRASEÑA EN PAPEL
+## 5️⃣ APUNTA LA CONTRASEÑA EN PAPEL
 Confirma antes de continuar:
 
 ```bash
 read -s -p "Apunta la passphrase en papel y pulsa ENTER para continuar..." ; echo
 ```
 
-# limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
+6️⃣ Limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
 ```bash
 printf '\033c'   # resetea la terminal
 printf '\e[3J'   # borra buffer de scrollback (muchos emuladores lo soportan)
 clear
 ```
-Restaura historial del shell:
+7️⃣ Restaura historial del shell:
 ```bash
 set -o history
 ```
-Guardar la passphrase en archivo seguro
+8️⃣ Guardar la passphrase en archivo seguro
 ```bash
 read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
 echo
@@ -676,22 +677,22 @@ printf "%s" "$PASSWORD" > ~/aztec/password.txt
 chmod 600 ~/aztec/password.txt
 unset PASSWORD
 ```
-Verifica que no haya salto de línea:
+9️⃣ Verifica que no haya salto de línea:
 ```bash
 hexdump -C ~/aztec-sequencer/password.txt | tail -n1
 ```
 
-Comprobar permisos del archivo (NO muestra la passphrase)
+🔟 Comprobar permisos del archivo (NO muestra la passphrase)
 ```bash
 ls -l ~/aztec/password.txt
 wc -c ~/aztec/password.txt   # muestra longitud en bytes (no revela contenido)
 ```
 
-# 4️⃣ Importar la private key como keystore cifrado
+⓫ Importar la private key como keystore cifrado
 ```bash
 geth account import --keystore ~/aztec-sequencer/keys --password ~/aztec-sequencer/password.txt /tmp/privatekey.txt
 ```
-# 5️⃣ Eliminar la private key temporal
+⓬ Eliminar la private key temporal
 ```bash
 shred -u /tmp/privatekey.txt
 ```
