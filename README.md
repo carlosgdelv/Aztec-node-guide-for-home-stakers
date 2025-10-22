@@ -568,11 +568,11 @@ docker compose down
 
 ___
 
-# Aztec-node (Testnet 2.0.2)
+# 🧰 AZTEC NODE SETUP — TESTNET 2.0.2
 
-1. Crear las carpetas necesarias
+1. Crear estructura de carpetas y permisos seguros
 ```bash
-mkdir -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
+mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
 ```
 2. Crear archivo keystore.json (puede estar vacío si lo llenas luego)
 ```bash
@@ -632,44 +632,40 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-# ✅ KEYSTORE ENCRYPTION
+# ✅ KEYSTORE ENCRYPTION (Attester)
 
-1️⃣ Crear carpeta para tus claves
-```bash
-mkdir -m 700 -p ~/aztec-sequencer/keys
-```
-2️⃣ Crear un archivo con tu private key (sin 0x)
+1️⃣ Crear un archivo con tu private key (sin 0x)
 ```bash
 printf "aabb...887799" > /tmp/privatekey.txt
 chmod 600 /tmp/privatekey.txt
 ```
-3️⃣ Crear un archivo con la contraseña de cifrado
+2️⃣ Crear un archivo con la contraseña de cifrado
 Desactivar historial del shell (evita que los comandos se guarden en ~/.bash_history)
 ```bash
 set +o history
 ```
-4️⃣ Generar y mostrar la passphrase de 10 palabras UNA SOLA VEZ (no se guarda en variable ni en fichero):
+3️⃣ Generar y mostrar la passphrase de 10 palabras UNA SOLA VEZ (no se guarda en variable ni en fichero):
 ```bash
 grep -E '^[a-z]{5,}$' /usr/share/dict/words | shuf -n 10 | paste -sd ' ' -
 ```
-## 5️⃣ APUNTA LA CONTRASEÑA EN PAPEL
+## 4️⃣ APUNTA LA CONTRASEÑA EN PAPEL
 Confirma antes de continuar:
 
 ```bash
 read -s -p "Apunta la passphrase en papel y pulsa ENTER para continuar..." ; echo
 ```
 
-6️⃣ Limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
+5️⃣ Limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
 ```bash
 printf '\033c'   # resetea la terminal
 printf '\e[3J'   # borra buffer de scrollback (muchos emuladores lo soportan)
 clear
 ```
-7️⃣ Restaura historial del shell:
+6️⃣ Restaura historial del shell:
 ```bash
 set -o history
 ```
-8️⃣ Guardar la passphrase en archivo seguro
+7️⃣ Guardar la passphrase en archivo seguro
 ```bash
 read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
 echo
@@ -677,22 +673,22 @@ printf "%s" "$PASSWORD" > ~/aztec/password.txt
 chmod 600 ~/aztec/password.txt
 unset PASSWORD
 ```
-9️⃣ Verifica que no haya salto de línea:
+8️⃣ Verifica que no haya salto de línea
 ```bash
 hexdump -C ~/aztec-sequencer/password.txt | tail -n1
 ```
 
-🔟 Comprobar permisos del archivo (NO muestra la passphrase)
+9️⃣ Comprobar permisos del archivo (NO muestra la passphrase)
 ```bash
 ls -l ~/aztec/password.txt
 wc -c ~/aztec/password.txt   # muestra longitud en bytes (no revela contenido)
 ```
 
-⓫ Importar la private key como keystore cifrado
+🔟 Importar la private key como keystore cifrado
 ```bash
 geth account import --keystore ~/aztec-sequencer/keys --password ~/aztec-sequencer/password.txt /tmp/privatekey.txt
 ```
-⓬ Eliminar la private key temporal
+⓫ Eliminar la private key temporal
 ```bash
 shred -u /tmp/privatekey.txt
 ```
@@ -708,7 +704,7 @@ Ese archivo ya contiene tu private key encriptada con tu contraseña.
 
 📄 Paso 2 — Configurar tu validators.json
 
-Edita tu JSON para que apunte a ese archivo y a la contraseña:
+Edita tu JSON para que apunte a ese archivo y a la contraseña. Si solo attester está cifrado, y los demás roles (coinbase, publisher) están en texto plano, quedaría así:
 
 ```bash
 {
@@ -719,6 +715,8 @@ Edita tu JSON para que apunte a ese archivo y a la contraseña:
         "path": "/home/usuario/aztec-sequencer/keys/UTC--2025-10-16T22-40-30.000Z--0xabcdef1234567890.json",
         "password_file": "/home/usuario/aztec-sequencer/password.txt"
       },
+      "publisher": "0x1234567890abcdef1234567890abcdef12345678",
+      "coinbase": "0x9876543210abcdef9876543210abcdef98765432",
       "feeRecipient": "0xabcdef1234567890abcdef1234567890abcdef12"
     }
   ]
@@ -730,9 +728,7 @@ Edita tu JSON para que apunte a ese archivo y a la contraseña:
 Usa "password_file" (no "password") si el software lo permite — así no dejas la contraseña escrita en el JSON en plain text. Si solo acepta "password", puedes dejarla en claro, pero es menos seguro.
 
 
-🛡️ Paso 3 — Seguridad de archivos
-bash
-
+🛡️ 3. Seguridad y verificación
 
 Aplica permisos estrictos:
 ```bash
@@ -746,6 +742,10 @@ chmod 600 ~/aztec-sequencer/password.txt
 ✅ Verifica que el keystore fue importado:
 ```bash
 geth account list --keystore ~/aztec-sequencer/keys
+```
+✅ Verifica que el archivo validators.json está bien formado:
+```bash
+jq . ~/aztec-sequencer/validators.json
 ```
 
 ✅ Verifica los parámetros de cifrado KDF:
