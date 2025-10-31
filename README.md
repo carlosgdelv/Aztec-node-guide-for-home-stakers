@@ -492,6 +492,7 @@ Where to do port forwarding:
 * Log in to your router’s admin panel (usually at 192.168.1.1 or 192.168.0.1 via a web browser).
 * Find the Port Forwarding, Virtual Server, or NAT section.
 
+
 What to do:
 Forward specific external ports to the internal IP addresses and ports of each PC running a node.
 
@@ -501,6 +502,13 @@ Example:
 
 Tip:
 To ensure your port forwarding rules remain valid, you need to assign static IP addresses or configure DHCP reservations for each PC running a node. This prevents your internal IP addresses (e.g., `192.168.1.101`) from changing over time due to automatic IP assignment by your router (DHCP).
+
+```bash
+192.168.1.1  
+User: user
+Password: xxxxxxxx
+https://www.yougetsignal.com/tools/open-ports/ 
+```
 
 To configure a DHCP reservation, you’ll need the MAC address of each PC, which uniquely identifies its network interface and can be obtained by running the `ip a` command in the terminal.
 
