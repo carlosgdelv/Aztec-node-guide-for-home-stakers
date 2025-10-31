@@ -71,6 +71,34 @@ ___
 ___
 
 
+# WSL installation 
+
+Install Windows Subsystem for Linux (WSL) on this machine.
+```bash
+wsl --install
+```
+Restart the computer so WSL installation and kernel updates take effect.
+```bash
+(Restart your PC)
+```
+List Linux distributions available to install from the Microsoft catalog.
+```bash
+wsl --list --online
+```
+Install Ubuntu 24.04 into WSL.
+```bash
+wsl --install -d Ubuntu-24.04
+```
+Open an interactive shell inside the Ubuntu 24.04 WSL distribution.
+```bash
+wsl -d Ubuntu-24.04
+```
+```bash
+wsl
+```
+___
+
+
 # Eth-Prysm-node
 Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
 
