@@ -93,6 +93,7 @@ Open an interactive shell inside the Ubuntu 24.04 WSL distribution.
 ```bash
 wsl -d Ubuntu-24.04
 ```
+or
 ```bash
 wsl
 ```
