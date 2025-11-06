@@ -454,9 +454,7 @@ sudo ufw enable
 # Sequencer
 sudo ufw allow 40400
 sudo ufw allow 8080
-=
-sudo ufw allow 40400/tcp 
-sudo ufw allow 8080/tcp   
+  
 ```
 
 ## Step 6. Check Your Public and Local IPs
