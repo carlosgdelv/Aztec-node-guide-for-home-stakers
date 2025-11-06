@@ -148,27 +148,27 @@ sudo systemctl restart docker
 
 Add Your User to the Docker Group
 
-Debe mostrar "carlos"
+It must show "carlos"
 ```bash
 whoami
 ```  
-Debe mostrar "1000"
+It must show "1000"
 ```bash
 id -u
 ```
-Debe mostrar "1000"
+It must show "1000"
 ```bash
 id -g        
 ```
-Tiene que decir: groupadd: el grupo «docker» ya existe
+It should say: groupadd: the group "docker" already exists
 ```bash
 sudo groupadd docker
 ```
-El siguiente comando agrega al usuario carlos al grupo docker para que pueda usar Docker sin sudo
+The following command adds the user carlos to the docker group so they can use Docker without sudo
 ```bash
 sudo usermod -aG docker carlos
 ```
-Reinicia la sesión o el sistema
+Restart the session or the system
 ```bash
 reboot
 ```
@@ -189,7 +189,7 @@ Generates a 32-byte random JWT secret in hexadecimal format and saves it to a fi
 openssl rand -hex 32 > ~/ethereum/jwt.hex
 ```
 
-Proteger el JWT secret con permisos estrictos
+Protect the JWT secret with strict permissions
 ```bash
 chmod 600 /home/carlos/ethereum/jwt.hex
 ```
@@ -313,23 +313,23 @@ docker compose down
 ✅ Aplicar reglas UFW:
 
 ```bash
-# 1. Permitir acceso SSH (solo si usas SSH, si no, omítelo)
+# 1. Allow SSH access (only if you use SSH, otherwise omit)
 sudo ufw allow OpenSSH
 
-# 2. Permitir tráfico P2P necesario Geth P2P, Geth P2P, Prysm P2P, Prysm gossip/block sync
+# 2. Allow P2P traffic required for Geth P2P, Geth P2P, Prysm P2P, Prysm gossip/block sync
 
 sudo ufw allow 30303/tcp      
 sudo ufw allow 30303/udp      
 sudo ufw allow 13000/tcp     
 sudo ufw allow 12000/udp      
 
-# 3. Política por defecto: bloquear tráfico entrante
+# 3. Default policy: deny incoming traffic
 sudo ufw default deny incoming
 
-# 4. Permitir tráfico saliente
+# 4. Allow outgoing traffic
 sudo ufw default allow outgoing
 
-# 5. Activar el firewall
+# 5. Enable the firewall
 sudo ufw enable
 
 ```
@@ -408,14 +408,11 @@ mkdir -p ~/nodeaztec/aztec
 ```
 ___
 
-
-
 ## Step 3. Install Aztec
 Downloads and runs Aztec’s official installer script in an interactive Bash shell, installing the latest Aztec CLI tools.
 ```bash
 bash -i <(curl -s https://install.aztec.network)
 ```
-
 
 ## Step 4. Add Aztec CLI to your System PATH
 This appends the Aztec binary path (`~/.aztec/bin`) to your PATH environment variable in the `.bashrc` file, so that your system can recognize the aztec command from any terminal.
@@ -433,9 +430,6 @@ ___
 
 
 
-
-
-
 Now check if Aztec successfully installed
 Runs the Aztec CLI with no arguments to verify that the command is available and prints its usage/help text, confirming a successful installation.
 ```bash
@@ -449,7 +443,6 @@ aztec-up alpha-testnet
 ___
 
 
-
 ## Step 5. Enable Firewall & Open Ports
 Enables the firewall and opens required ports for SSH access and for the Aztec sequencer to communicate.
 ```bash
@@ -457,7 +450,6 @@ Enables the firewall and opens required ports for SSH access and for the Aztec s
 sudo ufw allow 22
 sudo ufw allow ssh
 sudo ufw enable
-
 
 # Sequencer
 sudo ufw allow 40400
@@ -517,7 +509,6 @@ MAC address
 ip a
 ```
 
-
 If you have correctly configured port forwarding on your router, verify the accessibility of your nodes and services using the following commands:
 
 
@@ -545,12 +536,6 @@ Attempts to connect to another device within the local network (internal IP 192.
 ```bash
 nc -vz yourinternalIP 40400
 ```
-
-
-
-
-
-
 ___
 
 
@@ -607,12 +592,12 @@ ___
 
 # 🧰 AZTEC NODE SETUP — TESTNET 2.0.2
 
-1. Crear estructura de carpetas y permisos seguros
+1. Create folder structure with secure permissions
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
 ```
 
-3. Crear el archivo .env
+3. Create the .env file
 ```bash
 cd ~/aztec-sequencer
 touch .env
@@ -621,7 +606,7 @@ touch .env
 nano .env
 ```
 
-Y en `.env`, algo como esto (ajústalo si ya lo tienes):
+And in `.env`, something like this (adjust if you already have it):
 
 ```bash
 DATA_DIRECTORY=./data
@@ -635,18 +620,18 @@ AZTEC_PORT=8080
 AZTEC_ADMIN_PORT=8880
 ```
 
-Este comando muestra en la terminal el contenido del archivo `.env`.
+This command displays the contents of the `.env` file in the terminal.
 ```bash
 cat .env
 ```
 
-## 4. CREA LA AZTEC ADDRESS
+## 4. CREATE THE AZTEC ADDRESS
 
 Aztec CLI installed:
 ```bash
 bash -i <(curl -s https://install.aztec.network)
 ```
-Ejecuta este comando en tu terminal para añadir temporalmente el directorio al PATH en esta sesión actual:
+Run this command in your terminal to temporarily add the directory to the PATH for this current session:
 ```bash
 export PATH="$HOME/.aztec/bin:$PATH"
 ```
@@ -668,38 +653,39 @@ aztec-wallet create-account \
 ```
 # ✅ KEYSTORE ENCRYPTION (Attester)
 
-1️⃣ Crear un archivo con tu private key (sin 0x)
+1️⃣ Create a file with your private key (without 0x)
 ```bash
 printf "aabb...887799" > /tmp/privatekey.txt
 chmod 600 /tmp/privatekey.txt
 ```
 2️⃣ Crear un archivo con la contraseña de cifrado
-Desactivar historial del shell (evita que los comandos se guarden en `~/.bash_history`)
+Create a file with the encryption password
+Disable shell history (prevents the commands from being saved in `~/.bash_history`)
 ```bash
 set +o history
 ```
-3️⃣ Generar y mostrar la passphrase de 10 palabras UNA SOLA VEZ (no se guarda en variable ni en fichero):
+3️⃣ Generate and display a 10-word passphrase ONE TIME ONLY (it is not saved to a variable or file):
 ```bash
 grep -E '^[a-z]{5,}$' /usr/share/dict/words | shuf -n 10 | paste -sd ' ' -
 ```
-## 4️⃣ APUNTA LA CONTRASEÑA EN PAPEL
-Confirma antes de continuar:
+## 4️⃣ WRITE THE PASSPHRASE ON PAPER
+Confirm before continuing:
 
 ```bash
 read -s -p "Apunta la passphrase en papel y pulsa ENTER para continuar..." ; echo
 ```
 
-5️⃣ Limpiar pantalla y scrollback (funciona en la mayoría de terminales modernas)
+5️⃣ Clear the screen and scrollback (works in most modern terminals)
 ```bash
 printf '\033c'
 printf '\e[3J' 
 clear
 ```
-6️⃣ Restaura historial del shell:
+6️⃣ Restore shell history:
 ```bash
 set -o history
 ```
-7️⃣ Guardar la passphrase en archivo seguro
+7️⃣ Save the passphrase to a secure file
 ```bash
 read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
 echo
@@ -707,41 +693,41 @@ printf "%s" "$PASSWORD" > ~/aztec-sequencer/password.txt
 chmod 600 ~/aztec-sequencer/password.txt
 unset PASSWORD
 ```
-8️⃣ Verifica que no haya salto de línea
+8️⃣ Verify there is no trailing newline
 ```bash
 hexdump -C ~/aztec-sequencer/password.txt | tail -n1
 ```
 
-9️⃣ Comprobar permisos del archivo (NO muestra la passphrase)
+9️⃣ Check file permissions (DOES NOT display the passphrase)
 ```bash
 ls -l ~/aztec/password.txt
 wc -c ~/aztec/password.txt
 ```
 
-🔟 Importar la private key como keystore cifrado
+🔟  Import the private key as an encrypted keystore
 ```bash
 geth account import --keystore ~/aztec-sequencer/keys --password ~/aztec-sequencer/password.txt /tmp/privatekey.txt
 ```
 
-⓫ Eliminar la private key temporal
+⓫  Remove the temporary private key
 ```bash
 shred -u /tmp/privatekey.txt
 ```
-🔍 Cómo saber exactamente qué archivo se creó (y su path)
+🔍 How to know exactly which file was created (and its path)
 
-Directamente desde geth con la lista de cuentas
+Directly from geth with the account list
 ```bash
 geth account list --keystore ~/aztec-sequencer/keys
 ```
-Verás algo como:
+You will see something like:
 ```bash
 Account #0: {0xabcdef1234567890} /home/usuario/aztec-sequencer/keys/UTC--2025-10-22T17-41-12.123Z--0xabcdef1234567890.json
 ```
-Ese segundo valor es exactamente el `path` que tienes que usar en tu `validators.json`.
+That second value is exacly the `path` you must use in your `validators.json`.
 
-📄 Paso 2 — Configurar tu validators.json
+📄 Step 2 — Configure your validators.json
 
-Edita tu JSON para que apunte a ese archivo y a la contraseña. Si solo attester está cifrado, y los demás roles (`coinbase`, `publisher`) están en texto plano, quedaría así:
+Edit your JSON to point to that file and to the password. If only the attester is encrypted, and the other roles (`coinbase`,`publisher` ) are plaintext, it would look like this: Edita tu JSON para que apunte a ese archivo y a la contraseña.
 
 ```bash
 {
@@ -761,87 +747,87 @@ Edita tu JSON para que apunte a ese archivo y a la contraseña. Si solo attester
 
 ```
 
-🔐 OJO:
-Usa "password_file" (no "password") si el software lo permite — así no dejas la contraseña escrita en el JSON en plain text. Si solo acepta "password", puedes dejarla en claro, pero es menos seguro.
+🔐 NOTE:
+Use "password_file" (not "password") if the software allows it — this way you don't leave the password written in the JSON in plain text. If it only accepts "password", you can leave it in clear text, but it is less secure.
 
 
-🛡️ 3. Seguridad y verificación
+🛡️ 3. Security and verification
 
-Aplica permisos estrictos:
+Apply strict permissions:
 ```bash
 chmod 700 ~/aztec-sequencer/keys
 chmod 600 ~/aztec-sequencer/keys/*
 chmod 600 ~/aztec-sequencer/password.txt
 ```
 
-🧪 4. Verificaciones
+🧪 4.  Verifications
 
-✅ Verifica que el archivo existe
+✅ Verify that the file exists
 
 ```bash
 ls ~/aztec-sequencer/keys/UTC--*
 ```
 
-✅ Verifica que el keystore fue importado:
+✅ Verify that the keystore was imported:
 ```bash
 geth account list --keystore ~/aztec-sequencer/keys
 ```
 
-✅ Verifica que el archivo validators.json está bien formado:
+✅ Verify that the validators.json file is well-formed:
 ```bash
 jq . ~/aztec-sequencer/validators.json
 ```
 
-✅ Verifica que puedes leer la dirección desde el JSON
+✅ Verify that you can read the address from the JSON
 ```bash
 jq -r .address ~/aztec-sequencer/keys/UTC--*.json
 ```
 
-✅ Verifica los parámetros de cifrado KDF:
+✅ Verify the KDF encryption parameters:
 ```bash
 jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
 ```
 
-✅  Comprobar permisos del password file
+✅  Check the permissions of the password file
 ```bash
 ls -l ~/aztec-sequencer/password.txt
 ```
 
-✅ Comprobar si el archivo password.txt contiene salto de línea (no debería)
+✅ Check whether the password.txt file contains a newline (it should not)
 ```bash
 hexdump -C ~/aztec-sequencer/password.txt | tail -n1
 ```
-Si termina en 0a => salto de línea, reescribir con printf
+If it ends with 0a => newline, rewrite with printf
 
-Valores recomendados:
+Recommended values:
 ```bash
 "n" ≥ 262144 (cuanto más alto, más lento el brute force)
 "r" ≥ 8
 "p" ≥ 1
 ```
 
-🔧 Permisos de directorios y usuario
+🔧  Directory and user permissions
 
-Verifica:
+Verify:
 ```bash
 ls -l ~/aztec-sequencer
 ls -l ~/aztec-sequencer/keys
 id $USER
 
 ```
-✅ Eso es correcto si carlos tiene UID 1000. 
+✅ That is correct if carlos has UID 1000. 
 
-Para confirmarlo:
+To confirm:
 ```bash
 id carlos
 ```
-🛠️ Si por alguna razón los permisos no son correctos, arréglalo:
+🛠️  If for some reason the permissions are not correct, fix it:
 ```bash
 sudo chown -R 1000:1000 ~/aztec-sequencer
 ```
 
-## 🐳 8. Configura docker-compose.yml
-Edita:
+## 🐳 8. Configure docker-compose.yml
+Edit:
 ```bash
 nano docker-compose.yml
 ```
@@ -882,31 +868,30 @@ services:
       --network testnet
     restart: always
 ```
-📂 9. Asegura permisos de los volúmenes montados
+📂 9. Secure permissions of the mounted volumes
 
-Verifica que los directorios locales (./data y ./keys) tienen permisos para el UID 1000:
+Verify that the local directories (./data and ./keys) have permissions for UID 1000:
 ```bash
 sudo chown -R 1000:1000 ~/aztec-sequencer/data
 sudo chown -R 1000:1000 ~/aztec-sequencer/keys
 ```
 
-🚀 8. Inicia el nodo
+🚀 8. Start the node
 
-
-✅ Valida antes de levantar:
+✅ Validate before bringing it up:
 ```bash
 geth account list --keystore ~/aztec-sequencer/keys
 ```
-▶️ Arrancar los servicios:
+▶️ Start the services:
 ```bash
 docker compose up -d
 ```
-🧾 Ver logs en tiempo real:
+🧾 View logs in real time:
 
 ```bash
 docker compose logs -f
 ```
-⛔ Detener el nodo:
+⛔ Stop the node:
 ```bash
 docker compose down
 ```
