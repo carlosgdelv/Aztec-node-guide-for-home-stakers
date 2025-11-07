@@ -590,12 +590,12 @@ ___
 
 # 🧰 Aztec Node Setup — Testnet 2.0.2
 
-## 1. Create folder structure with secure permissions
+## Step 1. Create folder structure with secure permissions
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
 ```
 
-## 2. Create the .env file
+## Step 2. Create the .env file
 ```bash
 cd ~/aztec-sequencer
 touch .env
@@ -623,7 +623,7 @@ This command displays the contents of the `.env` file in the terminal.
 cat .env
 ```
 
-## 3. Crete The Aztec Address
+## Step 3. Crete The Aztec Address
 
 Aztec CLI installed:
 ```bash
@@ -649,7 +649,7 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-# 4 ✅ Keystore Encryption (Attester)
+# Step 4. ✅ Keystore Encryption (Attester)
 
 1️⃣ Create a file with your private key (without 0x)
 ```bash
@@ -723,7 +723,7 @@ Account #0: {0xabcdef1234567890} /home/usuario/aztec-sequencer/keys/UTC--2025-10
 ```
 That second value is exacly the `path` you must use in your `validators.json`.
 
-📄 Step 2 — Configure your validators.json
+## 📄 Step 5. — Configure your validators.json
 
 Edit your JSON to point to that file and to the password. If only the attester is encrypted, and the other roles (`coinbase`,`publisher` ) are plaintext, it would look like this: Edita tu JSON para que apunte a ese archivo y a la contraseña.
 
@@ -749,7 +749,7 @@ Edit your JSON to point to that file and to the password. If only the attester i
 Use "password_file" (not "password") if the software allows it — this way you don't leave the password written in the JSON in plain text. If it only accepts "password", you can leave it in clear text, but it is less secure.
 
 
-🛡️ 3. Security and verification
+## 🛡️ Step 6.. Security and verification
 
 Apply strict permissions:
 ```bash
@@ -758,7 +758,7 @@ chmod 600 ~/aztec-sequencer/keys/*
 chmod 600 ~/aztec-sequencer/password.txt
 ```
 
-🧪 4.  Verifications
+##🧪 Step 7.  Verifications
 
 ✅ Verify that the file exists
 
@@ -804,7 +804,7 @@ Recommended values:
 "p" ≥ 1
 ```
 
-🔧  Directory and user permissions
+## Step 8. 🔧  Directory and user permissions
 
 Verify:
 ```bash
@@ -824,7 +824,7 @@ id carlos
 sudo chown -R 1000:1000 ~/aztec-sequencer
 ```
 
-## 🐳 8. Configure docker-compose.yml
+## 🐳 9. Configure docker-compose.yml
 Edit:
 ```bash
 nano docker-compose.yml
@@ -866,7 +866,7 @@ services:
       --network testnet
     restart: always
 ```
-📂 9. Secure permissions of the mounted volumes
+## 📂 10. Secure permissions of the mounted volumes
 
 Verify that the local directories (./data and ./keys) have permissions for UID 1000:
 ```bash
@@ -874,7 +874,7 @@ sudo chown -R 1000:1000 ~/aztec-sequencer/data
 sudo chown -R 1000:1000 ~/aztec-sequencer/keys
 ```
 
-🚀 8. Start the node
+## 🚀 11. Start & update the node
 
 ✅ Validate before bringing it up:
 ```bash
@@ -894,18 +894,8 @@ docker compose logs -f
 docker compose down
 ```
 
-___
+🔄 Update Node:
 
-
-
-## Step 10. Update Sequencer Node
-1- Stop node. 
-Run `docker compose down` to stop and remove all running Aztec containers before updating.
-```bash
-docker compose down
-```
-
-2- Update Node.
 Run `aztec-up alpha-testnet` to fetch the latest configuration files for the Alpha Testnet environment.
 ```bash
 aztec-up alpha-testnet
@@ -914,21 +904,16 @@ Run `docker compose pull` to download the most recent Docker images defined in y
 ```bash
 docker compose pull
 ```
-
-3- Delete old data:
+Delete old data:
 This command forcefully deletes the entire Aztec alpha-testnet data directory and all its contents from your home folder to reset the node.
 ```bash
 rm -rf ~/.aztec/alpha-testnet/data/
 ```
-
-4- Re-run Node
-
-Return to Step 8 to re-run your node
-
+Re-run Node
 
 ___
 
-## Tooling Installation
+## 🧰 Tooling Installation
 
 Install Foundry (a smart contract development toolkit)
 
@@ -952,11 +937,7 @@ sudo apt install yarn
 yarn -v
 ```
 
-
-
-
 ___
-
 
 ## Verify Node's Peer ID
 **Find your Node's Peer ID:**
@@ -966,7 +947,6 @@ sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-test
 * This reveals your Node's Peer ID, Now search it on [Nethermind Explorer](https://aztec.nethermind.io/)
 * Note: It might takes some hours for your node to show up in Nethermind Explorer after it fully synced.
 * Note: If you get no output, replace `alpha-testnet` with the specific version tag (e.g. `0.87.8`) to retrieve the peer ID.
-
 
 ___
 
