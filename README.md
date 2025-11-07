@@ -42,7 +42,7 @@ ___
     <td><code>16 GB DDR5</code></td>
     <td><code>6-8 cores</code></td>
     <td><code>2-3 TB SSD</code></td>
-    <td><code>125 Mbps</code></td>
+    <td><code>600 Mbps</code></td>
   </tr>
 </table>
 
