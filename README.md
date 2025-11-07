@@ -1,4 +1,4 @@
-# Aztec-Node-Guide-For-Home-Stakers
+# Aztec Node Guide for Home Stakers
 
 ___
 
