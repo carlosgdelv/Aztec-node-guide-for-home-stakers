@@ -1,4 +1,4 @@
-# AZTEC-NODE-GUIDE-FOR-HOME-STAKERS
+# Aztec-Node-Guide-For-Home-Stakers
 
 ___
 
