@@ -345,7 +345,7 @@ sudo ufw status verbose
 
 ___
 
-## Step 7. Checking If Nodes are Synced
+## Step 7. 🔄 Checking If Nodes are Synced
 **Execution Node (Geth)**
 ```
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
@@ -379,7 +379,6 @@ If `is_syncing` is `true`, the node is still syncing, and `sync_distance` indica
 ___
 
 
-
 ## Step 8. 🔎 Getting the RPC Endpoints
 ### Execution Node (Geth)
 Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
@@ -387,34 +386,31 @@ Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0
 ### Beacon Node (Prysm)
 Aztec Sequencer Consensus Beacon RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:3500` or `http://localhost:3500`
 
-
 ---
 
-
-# Aztec-node (Testnet)
+# 🟣 Aztec-node (Testnet)
 Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Aztec full node and Validator registration on an Ubuntu-based system.
 
 ___
-
-## Step 1. Create a Wallet and Fund It
+## Step 1. 👛 Create a Wallet and Fund It
 To interact with the Aztec node on Sepolia, we will create a new MetaMask wallet (https://metamask.io/) in order to obtain its public and private key pair, and then fund it with Sepolia ETH using a faucet (https://sepolia-faucet.pk910.de/) so it can perform on-chain actions.
 
 ___
  
-## Step 2. Create Directory
+## Step 2. 📁 Create Directory
 Creates the `nodeaztec/aztec` directory under your home folder, including any parent directories, to store Aztec’s binaries and data.
 ```bash
 mkdir -p ~/nodeaztec/aztec
 ```
 ___
 
-## Step 3. Install Aztec
+## Step 3. ⚙️ Install Aztec
 Downloads and runs Aztec’s official installer script in an interactive Bash shell, installing the latest Aztec CLI tools.
 ```bash
 bash -i <(curl -s https://install.aztec.network)
 ```
 
-## Step 4. Add Aztec CLI to your System PATH
+## Step 4. 🧭 Add Aztec CLI to your System PATH
 This appends the Aztec binary path (`~/.aztec/bin`) to your PATH environment variable in the `.bashrc` file, so that your system can recognize the aztec command from any terminal.
 
 ```bash
@@ -443,7 +439,7 @@ aztec-up alpha-testnet
 ___
 
 
-## Step 5. Enable Firewall & Open Ports
+## Step 5. 🔥 Enable Firewall & Open Ports
 Enables the firewall and opens required ports for SSH access and for the Aztec sequencer to communicate.
 ```bash
 # Firewall
@@ -457,7 +453,7 @@ sudo ufw allow 8080
   
 ```
 
-## Step 6. Check Your Public and Local IPs
+## Step 6. 🌐 Check Your Public and Local IPs
 
 Use these commands to verify your public IP (used for external communication) and your local/internal IPs (used within your network or Docker).
 
@@ -470,7 +466,7 @@ hostname -I
 ___
 
 
-## Step 7. Port Forwarding
+## Step 7. 🔀 Port Forwarding
 
 Many internet providers use Carrier-Grade NAT (CG-NAT) to conserve IPv4 addresses. Under CG-NAT, multiple customers share a single public IP address, and your router is assigned a private IP by your ISP, not a true public one. As a result, you cannot receive unsolicited external connections or open ports properly, because incoming traffic cannot be uniquely routed to your home network.
 
@@ -537,7 +533,7 @@ nc -vz yourinternalIP 40400
 ___
 
 
-## Step 8. Configure `docker-compose.yml`
+## Step 8. 🐳 Configure `docker-compose.yml`
 
 Changes your working directory to the `nodeaztec` folder where your Aztec node’s Docker Compose configuration is located.
 ```bash
@@ -590,12 +586,12 @@ ___
 
 # 🧰 Aztec Node Setup — Testnet 2.0.2
 
-## Step 1. Create folder structure with secure permissions
+## Step 1. 🔐 Create folder structure with secure permissions
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
 ```
 
-## Step 2. Create the .env file
+## Step 2. 📄 Create the .env file
 ```bash
 cd ~/aztec-sequencer
 touch .env
@@ -623,7 +619,7 @@ This command displays the contents of the `.env` file in the terminal.
 cat .env
 ```
 
-## Step 3. Crete The Aztec Address
+## Step 3. 🏷️ Crete The Aztec Address
 
 Aztec CLI installed:
 ```bash
@@ -649,7 +645,7 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-# Step 4. ✅ Keystore Encryption (Attester)
+# Step 4. 🔐 Keystore Encryption (Attester)
 
 1️⃣ Create a file with your private key (without 0x)
 ```bash
@@ -806,7 +802,7 @@ Recommended values:
 
 ## Step 8. 🔧  Directory and user permissions
 
-Verify:
+✅ Verify:
 ```bash
 ls -l ~/aztec-sequencer
 ls -l ~/aztec-sequencer/keys
@@ -939,7 +935,7 @@ yarn -v
 
 ___
 
-## Verify Node's Peer ID
+## 🆔 Verify Node's Peer ID
 **Find your Node's Peer ID:**
 ```bash
 sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-testnet | head -n 1) 2>&1 | grep -i "peerId" | grep -o '"peerId":"[^"]*"' | cut -d'"' -f4 | head -n 1
@@ -950,7 +946,7 @@ sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-test
 
 ___
 
-## Getting Apprentice Role
+## 🎓 Getting Apprentice Role
 Head to Aztec Discord and go to `operator | start-here` channel
 Run command `/operator help` there
 Run this command:
