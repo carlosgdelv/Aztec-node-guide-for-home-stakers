@@ -71,7 +71,7 @@ ___
 ___
 
 
-# WSL installation 
+## WSL installation 
 
 Install Windows Subsystem for Linux (WSL) on this machine.
 ```bash
