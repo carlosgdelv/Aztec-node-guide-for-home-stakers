@@ -2,13 +2,13 @@
 
 ___
 
-## Reasons to Run your Own Ethereum Node
+## 🎯 Reasons to Run your Own Ethereum Node
 
 To operate an Aztec node reliably, it is necessary to also run your own Ethereum execution and consensus clients. Aztec depends on the Ethereum base layer for data availability and settlement, which means it constantly queries and submits transactions to Ethereum. By managing your own Ethereum clients, you ensure low-latency, high-availability RPC access, reducing the risk of downtime, rate-limiting, or outages caused by third-party providers. Past issues with public RPCs have led to Aztec nodes failing to sync or sequence correctly, so running self-hosted clients is the most resilient and technically sound approach.
 
 ___
 
-## Reference Documentation
+## 📚 Reference Documentation
 
 
 Below you’ll find links to the official Aztec documentation, along with community-contributed resources designed to help you deploy, configure, and operate Aztec nodes:
@@ -27,7 +27,7 @@ ___
 
 
 
-##  Suggested Hardware & Bandwidth Requirements
+##  🛡️ Suggested Hardware & Bandwidth Requirements
 <table>
   <tr>
     <th colspan="4"> OS: Ubuntu 20.04 or later</th>
@@ -47,7 +47,7 @@ ___
 </table>
 
 
-## Personal PC Specifications for Running a Node
+## 🖥️ Personal PC Specifications for Running a Node
 
 
 - **Processor (CPU)**  
@@ -71,7 +71,7 @@ ___
 ___
 
 
-## WSL installation 
+## 🪟 WSL installation 
 
 Install Windows Subsystem for Linux (WSL) on this machine.
 ```bash
@@ -100,12 +100,12 @@ wsl
 ___
 
 
-# Eth-Prysm-node
+# ⟠  Eth-Prysm-node
 Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
 
 ___
 
-## Step 1. Install Dependecies
+## Step 1. 🔧 Install Dependecies
 **Packages:**
 Refreshes the local package index and then upgrades all installed packages to their latest available versions without prompting for confirmation.
 ```bash
@@ -174,7 +174,7 @@ reboot
 ```
 
 
-## Step 2. Create Directories
+## Step 2. 📁 Create Directories
 These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
 ```bash
 mkdir -p ~/ethereum/execution ~/ethereum/consensus
@@ -182,7 +182,7 @@ mkdir -p ~/ethereum/execution ~/ethereum/consensus
 
 ---
 
-## Step 3. Generate the JWT secret:
+## Step 3. 🔐 Generate the JWT secret:
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
 ```bash
@@ -201,7 +201,7 @@ cat ~/ethereum/jwt.hex
 
 ---
 
-## Step 4. Configure `docker-compose.yml`
+## Step 4. 🐳 Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
 ```bash
 cd ~/ethereum
@@ -289,7 +289,7 @@ services:
 
 ___
 
-## Step 6. Run Geth & Prysm Nodes
+## Step 5. ▶️ Run Geth & Prysm Nodes
 
 ▶️ Start Geth & Prysm Nodes:
 Starts the Geth and Prysm containers in detached mode (running in the background).
@@ -307,7 +307,7 @@ Run `docker compose down` to stop and remove all running Aztec containers before
 ```bash
 docker compose down
 ```
-## Step 7. UFW
+## Step 6. 🔥 UFW
 
 
 ✅ Aplicar reglas UFW:
@@ -345,7 +345,7 @@ sudo ufw status verbose
 
 ___
 
-## Step 8. Checking If Nodes are Synced
+## Step 7. Checking If Nodes are Synced
 **Execution Node (Geth)**
 ```
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
@@ -380,7 +380,7 @@ ___
 
 
 
-## Step 9. Getting the RPC Endpoints
+## Step 8. 🔎 Getting the RPC Endpoints
 ### Execution Node (Geth)
 Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
 
