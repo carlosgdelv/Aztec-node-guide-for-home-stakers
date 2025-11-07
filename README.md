@@ -588,7 +588,7 @@ docker compose down
 
 ___
 
-# 🧰 AZTEC NODE SETUP — TESTNET 2.0.2
+# 🧰 Aztec Node Setup — Testnet 2.0.2
 
 1. Create folder structure with secure permissions
 ```bash
@@ -623,7 +623,7 @@ This command displays the contents of the `.env` file in the terminal.
 cat .env
 ```
 
-## 4. CREATE THE AZTEC ADDRESS
+## 4. Crete The Aztec Address
 
 Aztec CLI installed:
 ```bash
@@ -649,7 +649,7 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-# ✅ KEYSTORE ENCRYPTION (Attester)
+# ✅ Keystore Encryption (Attester)
 
 1️⃣ Create a file with your private key (without 0x)
 ```bash
