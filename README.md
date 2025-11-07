@@ -864,7 +864,7 @@ services:
 ```
 ## 📂 10. Secure permissions of the mounted volumes
 
-Verify that the local directories (./data and ./keys) have permissions for UID 1000:
+✅ Verify that the local directories (./data and ./keys) have permissions for UID 1000:
 ```bash
 sudo chown -R 1000:1000 ~/aztec-sequencer/data
 sudo chown -R 1000:1000 ~/aztec-sequencer/keys
