@@ -754,7 +754,7 @@ chmod 600 ~/aztec-sequencer/keys/*
 chmod 600 ~/aztec-sequencer/password.txt
 ```
 
-##🧪 Step 7.  Verifications
+## Step 7. 🧪 Verifications
 
 ✅ Verify that the file exists
 
