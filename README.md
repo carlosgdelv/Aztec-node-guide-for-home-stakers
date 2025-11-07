@@ -590,12 +590,12 @@ ___
 
 # 🧰 Aztec Node Setup — Testnet 2.0.2
 
-1. Create folder structure with secure permissions
+## 1. Create folder structure with secure permissions
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
 ```
 
-3. Create the .env file
+## 2. Create the .env file
 ```bash
 cd ~/aztec-sequencer
 touch .env
@@ -623,7 +623,7 @@ This command displays the contents of the `.env` file in the terminal.
 cat .env
 ```
 
-## 4. Crete The Aztec Address
+## 3. Crete The Aztec Address
 
 Aztec CLI installed:
 ```bash
@@ -649,7 +649,7 @@ aztec-wallet create-account \
     --node-url $NODE_URL \
     --alias my-wallet
 ```
-# ✅ Keystore Encryption (Attester)
+# 4 ✅ Keystore Encryption (Attester)
 
 1️⃣ Create a file with your private key (without 0x)
 ```bash
@@ -1026,7 +1026,7 @@ NOTE: Currently there is a daily registration quota each day, if you missed it n
 
 ___
 
-## Monitor System
+## 🔍 Monitor System
 
 Monitor your hardware usage:
 ```bash
@@ -1053,7 +1053,7 @@ docker exec -it nodeaztec-node-1 du -sh /data/*
 ```
 ___
 
-## Simple Docker Guide
+## 🐳 Simple Docker Guide
 
 Shows all currently running Docker containers.
 ```bash
