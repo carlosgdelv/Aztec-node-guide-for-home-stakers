@@ -926,22 +926,6 @@ rm -rf ~/.aztec/alpha-testnet/data/
 Return to Step 8 to re-run your node
 
 
-
-___
-
-
-## Step 11. Register Validator
-Make sure your Sequencer node is fully synced, before you proceed with Validator registration
-```bash
-aztec add-l1-validator \
-  --l1-rpc-urls RPC_URL \
-  --private-key your-private-key \
-  --attester your-validator-address \
-  --proposer-eoa your-validator-address \
-  --staking-asset-handler 0xF739D03e98e23A7B65940848aBA8921fF3bAc4b2 \
-  --l1-chain-id 11155111
-```
-
 ___
 
 ## Tooling Installation
