@@ -146,7 +146,7 @@ sudo systemctl restart docker
 
 ---
 
-Add Your User to the Docker Group
+## Step 2. 👤➕🐳 Add Your User to the Docker Group
 
 It must show "carlos"
 ```bash
@@ -174,7 +174,7 @@ reboot
 ```
 
 
-## Step 2. 📁 Create Directories
+## Step 3. 📁 Create Directories
 These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
 ```bash
 mkdir -p ~/ethereum/execution ~/ethereum/consensus
@@ -182,7 +182,7 @@ mkdir -p ~/ethereum/execution ~/ethereum/consensus
 
 ---
 
-## Step 3. 🔐 Generate the JWT secret:
+## Step 4. 🔐 Generate the JWT secret:
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
 ```bash
@@ -201,7 +201,7 @@ cat ~/ethereum/jwt.hex
 
 ---
 
-## Step 4. 🐳 Configure `docker-compose.yml`
+## Step 5. 🐳 Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
 ```bash
 cd ~/ethereum
@@ -289,7 +289,7 @@ services:
 
 ___
 
-## Step 5. ▶️ Run Geth & Prysm Nodes
+## Step 6. ▶️ Run Geth & Prysm Nodes
 
 ▶️ Start Geth & Prysm Nodes:
 Starts the Geth and Prysm containers in detached mode (running in the background).
@@ -307,7 +307,7 @@ Run `docker compose down` to stop and remove all running Aztec containers before
 ```bash
 docker compose down
 ```
-## Step 6. 🔥 UFW
+## Step 7. 🔥 UFW
 
 
 ✅ Aplicar reglas UFW:
@@ -345,7 +345,7 @@ sudo ufw status verbose
 
 ___
 
-## Step 7. 🔄 Checking If Nodes are Synced
+## Step 8. 🔄 Checking If Nodes are Synced
 **Execution Node (Geth)**
 ```
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
@@ -379,7 +379,7 @@ If `is_syncing` is `true`, the node is still syncing, and `sync_distance` indica
 ___
 
 
-## Step 8. 🔎 Getting the RPC Endpoints
+## Step 9. 🔎 Getting the RPC Endpoints
 ### Execution Node (Geth)
 Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
 
