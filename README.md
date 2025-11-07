@@ -745,7 +745,7 @@ Edit your JSON to point to that file and to the password. If only the attester i
 Use "password_file" (not "password") if the software allows it — this way you don't leave the password written in the JSON in plain text. If it only accepts "password", you can leave it in clear text, but it is less secure.
 
 
-## 🛡️ Step 6.. Security and verification
+## 🛡️ Step 6. Security and verification
 
 Apply strict permissions:
 ```bash
