@@ -551,7 +551,7 @@ Replace the following code into your `docker-compose.yml` file:
 services:
   node:
     container_name: aztec-sequencer
-    image: aztecprotocol/aztec:alpha-testnet
+    image: aztecprotocol/aztec:2.1.2
     network_mode: host
     restart: unless-stopped
     environment:
@@ -564,7 +564,7 @@ services:
       GOVERNANCE_PAYLOAD: ${GOVERNANCE_PAYLOAD}
       LOG_LEVEL: debug
     entrypoint: >
-      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080'
+      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080 --sync-mode full'
     volumes:
       - /root/.aztec/alpha-testnet/data/:/data
 
