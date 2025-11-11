@@ -564,9 +564,9 @@ services:
       GOVERNANCE_PAYLOAD: 0xDCd9DdeAbEF70108cE02576df1eB333c4244C666
       LOG_LEVEL: debug
     entrypoint: >
-      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080 --sync-mode full'
+      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080 --sync-mode full'
     volumes:
-      - /root/.aztec/alpha-testnet/data/:/data
+      - /root/.aztec/testnet/data/:/data
 
 ```
 ▶️ Starts all services defined in your `docker-compose.yml` in the background (detached mode)
