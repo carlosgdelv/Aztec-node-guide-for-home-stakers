@@ -68,35 +68,7 @@ ___
 - **Motherboard**  
   ATX board with B760 chipset, supports DDR5 and PCIe 4.0.
 
-___
 
-
-## 🪟 WSL installation 
-
-Install Windows Subsystem for Linux (WSL) on this machine.
-```bash
-wsl --install
-```
-Restart the computer so WSL installation and kernel updates take effect.
-```bash
-(Restart your PC)
-```
-List Linux distributions available to install from the Microsoft catalog.
-```bash
-wsl --list --online
-```
-Install Ubuntu 24.04 into WSL.
-```bash
-wsl --install -d Ubuntu-24.04
-```
-Open an interactive shell inside the Ubuntu 24.04 WSL distribution.
-```bash
-wsl -d Ubuntu-24.04
-```
-or
-```bash
-wsl
-```
 ___
 
 
@@ -434,7 +406,13 @@ aztec
 Then update Aztec to Alpha Testnet
 Switches or initializes your Aztec environment to the Alpha Testnet configuration, downloading any required network artifacts and setting your CLI to target that test network.
 ```bash
-aztec-up alpha-testnet
+aztec-up 2.1.2
+```
+
+✅ Verify 
+
+```bash
+aztec --version
 ```
 ___
 
@@ -984,122 +962,4 @@ Congratulations, now you have Apprentice role!
 If it successfully registered you can check it from operator | start-here and use the command /operator my-stats and enter your validator address.
 NOTE: Currently there is a daily registration quota each day, if you missed it now you can try tomorrow.
 
-___
 
-## 🔍 Monitor System
-
-Monitor your hardware usage:
-```bash
-htop
-```
-
-Monitor your Disk usage:
-```bash
-df -h
-```
-
-Monitor Geth Disk usage:
-```bash
-docker exec -it geth du -sh /data
-```
-
-Monitor Prysm Disk usage:
-```bash
-docker exec -it prysm du -sh /data
-```
-Monitor Aztec Disk usage:
-```bash
-docker exec -it nodeaztec-node-1 du -sh /data/*
-```
-___
-
-## 🐳 Simple Docker Guide
-
-Shows all currently running Docker containers.
-```bash
-docker ps
-```
-
-Lists all containers, including those that are stopped.
-```bash
-docker ps -a
-```
-It shows real-time metrics of running containers, including CPU, memory, network, and disk usage.
-```bash
-docker stats 
-```
-
-Stops the specified running container gracefully.
-```bash
-docker stop <container_id_or_name>
-```
-
-Deletes the specified container permanently.
-```bash
-docker rm <container_id_or_name>
-```
-
-Removes all stopped containers in one go to free up space.
-```bash
-docker container prune
-```
-
-Uninstalls Docker packages and deletes Docker data directories to fully clean your system.
-```bash
-sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-compose-plugin
-sudo rm -rf /var/lib/docker
-sudo rm -rf /var/lib/containerd
-```
-
-___
-
-## 🔧 Extending Disk Space on a Linux VM (LVM + SSD)
-
-1. Update system and install LVM tools
-Install the LVM2 utilities required to manage logical volumes.
-```bash
-sudo apt update
-sudo apt install lvm2 -y
-```
-
-2. Wipe all data and prepare the new disk
-Remove all existing filesystem/partition data and initialize the disk as a physical volume.
-```bash
-sudo wipefs --all /dev/nvme1n1
-sudo sgdisk --zap-all /dev/nvme1n1
-sudo pvcreate /dev/nvme1n1
-```
-
-3. Add the new disk to the existing volume group
-Extend your volume group (ubuntu-vg) to include the new disk.
-```bash
-sudo vgextend ubuntu-vg /dev/nvme1n1
-```
-
-4. Confirm volume group changes
-Check that the volume group now contains the new physical volume.
-```bash
-sudo vgs
-```
-
-5. Extend the logical volume to use all free space
-Grow the logical volume (ubuntu-lv) with all available space from the volume group.
-```bash
-sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
-```
-6. Resize the filesystem
-Expand the filesystem to match the new size of the logical volume.
-```bash
-sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
-```
-7. Verify the changes
-Check the updated disk space and filesystem type.
-```bash
-df -h /
-df -T /
-```
-8. Optional: View detailed LV info
-Display full details of the extended logical volume.
-```bash
-sudo lvdisplay /dev/ubuntu-vg/ubuntu-lv
-```
