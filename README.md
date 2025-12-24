@@ -184,33 +184,32 @@ nano docker-compose.yml
 ```
 Replace the following code into your `docker-compose.yml` file:
 ```yaml
-version: '3.8'
-
 services:
   geth:
-    image: ethereum/client-go:v1.16.4
+    image: ethereum/client-go:stable
     container_name: geth
-    restart: unless-stopped
     network_mode: host
+    restart: unless-stopped
+    ports:
+      - 30303:30303
+      - 30303:30303/udp
+      - 8545:8545
+      - 8546:8546
+      - 8551:8551
     volumes:
-      - geth-data:/data
-      - /home/carlos/ethereum-mainnet/jwt.hex:/jwt.hex:ro
-    entrypoint: ["/bin/sh", "-c"]
+      - /root/ethereum/execution:/data
+      - /root/ethereum/jwt.hex:/data/jwt.hex
     command:
-      - |
-        mkdir -p /data/geth && chown -R 1000:1000 /data && \
-        exec geth --mainnet \
-          --http \
-          --http.api=eth,net,web3 \
-          --http.addr=127.0.0.1 \
-          --authrpc.addr=127.0.0.1 \
-          --authrpc.vhosts=* \
-          --authrpc.jwtsecret=/jwt.hex \
-          --authrpc.port=8551 \
-          --syncmode=snap \
-          --cache=8192 \
-          --maxpeers=50 \
-          --datadir=/data
+      - --mainnet
+      - --http
+      - --http.api=eth,net,web3
+      - --http.addr=0.0.0.0
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.vhosts=*
+      - --authrpc.jwtsecret=/data/jwt.hex
+      - --authrpc.port=8551
+      - --syncmode=snap
+      - --datadir=/data
     logging:
       driver: "json-file"
       options:
@@ -218,43 +217,41 @@ services:
         max-file: "3"
 
   prysm:
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
+    image: gcr.io/offchainlabs/prysm/beacon-chain:stable  # Updated repo/tag for v6.1.2+
     container_name: prysm
-    restart: unless-stopped
     network_mode: host
+    restart: unless-stopped
+    volumes:
+      - /root/ethereum/consensus:/data
+      - /root/ethereum/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
-    volumes:
-      - prysm-data:/data
-      - /home/carlos/ethereum-mainnet/jwt.hex:/jwt.hex:ro
-    entrypoint: ["/bin/sh", "-c"]
+    ports:
+      - 4000:4000
+      - 3500:3500
     command:
-      - |
-        mkdir -p /data/beaconchaindata && chown -R 1000:1000 /data && \
-        exec /app/cmd/beacon-chain/beacon-chain --mainnet \
-          --accept-terms-of-use \
-          --datadir=/data \
-          --disable-monitoring \
-          --rpc-host=127.0.0.1 \
-          --execution-endpoint=http://127.0.0.1:8551 \
-          --jwt-secret=/jwt.hex \
-          --rpc-port=4000 \
-          --grpc-gateway-corsdomain=* \
-          --grpc-gateway-host=127.0.0.1 \
-          --grpc-gateway-port=3500 \
-          --min-sync-peers=3 \
-          --subscribe-all-data-subnets \
-          --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io \
-          --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
+      - --mainnet
+      - --accept-terms-of-use
+      - --datadir=/data
+      - --disable-monitoring
+      - --rpc-host=0.0.0.0
+      - --execution-endpoint=http://127.0.0.1:8551
+      - --jwt-secret=/data/jwt.hex
+      - --rpc-port=4000
+      - --grpc-gateway-corsdomain=*
+      - --grpc-gateway-host=0.0.0.0
+      - --grpc-gateway-port=3500
+      - --min-sync-peers=3
+      - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io \
+      -  --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
+      - --subscribe-all-data-subnets  # Added this flag to subscription for supernode
+      - --verbosity=debug  # Added this temp for troubleshooting
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
-volumes:
-  geth-data:
-  prysm-data:
 ```
 
 
