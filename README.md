@@ -149,7 +149,7 @@ reboot
 ## Step 3. 📁 Create Directories
 These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
 ```bash
-mkdir -p ~/ethereum/execution ~/ethereum/consensus
+mkdir -p ~/ethereum-mainnet/execution ~/ethereum-mainnet/consensus
 ```
 
 ---
@@ -158,17 +158,17 @@ mkdir -p ~/ethereum/execution ~/ethereum/consensus
 Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
 
 ```bash
-openssl rand -hex 32 > ~/ethereum/jwt.hex
+openssl rand -hex 32 > ~/ethereum-mainnet/jwt.hex
 ```
 
 Protect the JWT secret with strict permissions
 ```bash
-chmod 600 /home/carlos/ethereum/jwt.hex
+chmod 600 /home/carlos/ethereum-mainnet/jwt.hex
 ```
 
 Prints the contents of the jwt.hex file to verify it was correctly generated.
 ```bash
-cat ~/ethereum/jwt.hex
+cat ~/ethereum-mainnet/jwt.hex
 ```
 
 ---
@@ -176,7 +176,7 @@ cat ~/ethereum/jwt.hex
 ## Step 5. 🐳 Configure `docker-compose.yml`
 Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
 ```bash
-cd ~/ethereum
+cd ~/ethereum-mainnet
 ```
 Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
 ```bash
@@ -184,35 +184,33 @@ nano docker-compose.yml
 ```
 Replace the following code into your `docker-compose.yml` file:
 ```yaml
+version: '3.8'
+
 services:
   geth:
     image: ethereum/client-go:v1.16.4
     container_name: geth
-    network_mode: host
-    user: "1000:1000"
     restart: unless-stopped
-    ports:
-      - 30303:30303
-      - 30303:30303/udp
-      - 8545:8545
-      - 8546:8546
-      - 8551:8551
+    network_mode: host
     volumes:
-      - /home/carlos/ethereum/execution:/data
-      - /home/carlos/ethereum/jwt.hex:/data/jwt.hex
+      - geth-data:/data
+      - /home/carlos/ethereum-mainnet/jwt.hex:/jwt.hex:ro
+    entrypoint: ["/bin/sh", "-c"]
     command:
-      - --mainnet
-      - --http
-      - --http.api=eth,net,web3
-      - --http.addr=127.0.0.1
-      - --authrpc.addr=127.0.0.1
-      - --authrpc.vhosts=*
-      - --authrpc.jwtsecret=/data/jwt.hex
-      - --authrpc.port=8551
-      - --syncmode=snap
-      - --cache=8192
-      - --maxpeers=50
-      - --datadir=/data
+      - |
+        mkdir -p /data/geth && chown -R 1000:1000 /data && \
+        exec geth --mainnet \
+          --http \
+          --http.api=eth,net,web3 \
+          --http.addr=127.0.0.1 \
+          --authrpc.addr=127.0.0.1 \
+          --authrpc.vhosts=* \
+          --authrpc.jwtsecret=/jwt.hex \
+          --authrpc.port=8551 \
+          --syncmode=snap \
+          --cache=8192 \
+          --maxpeers=50 \
+          --datadir=/data
     logging:
       driver: "json-file"
       options:
@@ -220,42 +218,43 @@ services:
         max-file: "3"
 
   prysm:
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:v6.1.2
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
     container_name: prysm
-    network_mode: host
-    user: "1000:1000"
     restart: unless-stopped
-    volumes:
-      - /home/carlos/ethereum/consensus:/data
-      - /home/carlos/ethereum/jwt.hex:/data/jwt.hex
+    network_mode: host
     depends_on:
       - geth
-    ports:
-      - 4000:4000
-      - 3500:3500
+    volumes:
+      - prysm-data:/data
+      - /home/carlos/ethereum-mainnet/jwt.hex:/jwt.hex:ro
+    entrypoint: ["/bin/sh", "-c"]
     command:
-      - --mainnet
-      - --accept-terms-of-use
-      - --datadir=/data
-      - --disable-monitoring
-      - --rpc-host=127.0.0.1
-      - --execution-endpoint=http://127.0.0.1:8551
-      - --jwt-secret=/data/jwt.hex
-      - --rpc-port=4000
-      - --grpc-gateway-corsdomain=*
-      - --grpc-gateway-host=127.0.0.1
-      - --grpc-gateway-port=3500
-      - --min-sync-peers=3
-      - --subscribe-all-data-subnets
-      - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
-      - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
-      - --checkpoint-sync-url=https://checkpoint-sync.sepolia.ethpandaops.io
-      - --genesis-beacon-api-url=https://checkpoint-sync.sepolia.ethpandaops.io
+      - |
+        mkdir -p /data/beaconchaindata && chown -R 1000:1000 /data && \
+        exec /app/cmd/beacon-chain/beacon-chain --mainnet \
+          --accept-terms-of-use \
+          --datadir=/data \
+          --disable-monitoring \
+          --rpc-host=127.0.0.1 \
+          --execution-endpoint=http://127.0.0.1:8551 \
+          --jwt-secret=/jwt.hex \
+          --rpc-port=4000 \
+          --grpc-gateway-corsdomain=* \
+          --grpc-gateway-host=127.0.0.1 \
+          --grpc-gateway-port=3500 \
+          --min-sync-peers=3 \
+          --subscribe-all-data-subnets \
+          --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io \
+          --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+volumes:
+  geth-data:
+  prysm-data:
 ```
 
 
