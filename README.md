@@ -197,8 +197,8 @@ services:
       - 8546:8546
       - 8551:8551
     volumes:
-      - /root/ethereum/execution:/data
-      - /root/ethereum/jwt.hex:/data/jwt.hex
+      - /home/carlos/ethereum-mainnet/execution:/data
+      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
     command:
       - --mainnet
       - --http
@@ -217,13 +217,13 @@ services:
         max-file: "3"
 
   prysm:
-    image: gcr.io/offchainlabs/prysm/beacon-chain:stable  # Updated repo/tag for v6.1.2+
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
     container_name: prysm
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /root/ethereum/consensus:/data
-      - /root/ethereum/jwt.hex:/data/jwt.hex
+      - /home/carlos/ethereum-mainnet/consensus:/data
+      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
     depends_on:
       - geth
     ports:
@@ -242,10 +242,10 @@ services:
       - --grpc-gateway-host=0.0.0.0
       - --grpc-gateway-port=3500
       - --min-sync-peers=3
-      - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io \
-      -  --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
-      - --subscribe-all-data-subnets  # Added this flag to subscription for supernode
-      - --verbosity=debug  # Added this temp for troubleshooting
+    	- --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
+    	- --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
+      - --subscribe-all-subnets
+      - --verbosity=info
     logging:
       driver: "json-file"
       options:
