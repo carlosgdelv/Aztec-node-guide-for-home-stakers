@@ -231,6 +231,7 @@ services:
       - 3500:3500
     command:
       - --mainnet
+      - --supernode
       - --accept-terms-of-use
       - --datadir=/data
       - --disable-monitoring
