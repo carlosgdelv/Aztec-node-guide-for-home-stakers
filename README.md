@@ -243,8 +243,8 @@ services:
       - --grpc-gateway-host=0.0.0.0
       - --grpc-gateway-port=3500
       - --min-sync-peers=3
-    	- --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
       - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
+    	- --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
       - --subscribe-all-subnets
       - --verbosity=info
     logging:
