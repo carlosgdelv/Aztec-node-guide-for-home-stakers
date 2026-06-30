@@ -1,36 +1,71 @@
-# Aztec Node Guide for Home Stakers
+<div align="center">
 
-___
+🖥️
+
+# Linux Operating System & Node Infrastructure Handbook
+
+**Guía práctica de administración de sistemas Linux y despliegue de nodos blockchain (Ethereum L1 + Aztec L2)**
+
+![Bash](https://img.shields.io/badge/Bash-4EAA25?style=flat&logo=gnubash&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=flat&logo=ethereum&logoColor=white)
+
+![License](https://img.shields.io/badge/license-MIT-green)
+![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue)
+
+</div>
+
+---
+
+## 📖 Acerca de
+
+Guía completa para desplegar un nodo Ethereum L1 (Geth + Prysm) y un nodo Aztec L2 — tanto full node como secuenciador/validador — en una máquina propia o VPS, pensada para home stakers que prefieren no depender de RPCs públicos de terceros.
+
+> Esta versión corrige varios puntos de la guía original que estaban desactualizados o eran inseguros: la imagen de Prysm apuntaba a una organización que Offchain Labs está deprecando, el método de cifrado de la clave del atestador omitía por completo la clave BLS (sin ella, el validador no puede funcionar), y faltaban advertencias de seguridad alrededor de claves privadas en texto plano. Todo lo de abajo está verificado contra la documentación oficial de Aztec y Prysm a fecha de esta guía — y aun así, en proyectos que evolucionan tan rápido como este, comprueba siempre la versión más reciente antes de desplegar en producción.
+
+## 📑 Tabla de contenidos
+
+- [🎯 Reasons to Run your Own Ethereum Node](#-reasons-to-run-your-own-ethereum-node)
+- [📚 Reference Documentation](#-reference-documentation)
+- [🛡️ Hardware & Bandwidth Requirements](#️-suggested-hardware--bandwidth-requirements)
+- [⚠️ Security Checklist Before You Start](#️-security-checklist-before-you-start)
+- [⟠ Part 1 — Ethereum L1 Node (Geth + Prysm)](#-part-1--ethereum-l1-node-geth--prysm)
+- [🟣 Part 2 — Aztec L2 Node](#-part-2--aztec-l2-node)
+- [🧰 Optional: Developer Tooling](#-optional-developer-tooling)
+- [🆔 Verify Node's Peer ID](#-verify-nodes-peer-id)
+- [🎓 Getting Apprentice Role](#-getting-apprentice-role)
+- [🔥 Combined Firewall Reference](#-combined-firewall-reference)
+- [🗂️ .gitignore](#️-gitignore)
+
+---
 
 ## 🎯 Reasons to Run your Own Ethereum Node
 
 To operate an Aztec node reliably, it is necessary to also run your own Ethereum execution and consensus clients. Aztec depends on the Ethereum base layer for data availability and settlement, which means it constantly queries and submits transactions to Ethereum. By managing your own Ethereum clients, you ensure low-latency, high-availability RPC access, reducing the risk of downtime, rate-limiting, or outages caused by third-party providers. Past issues with public RPCs have led to Aztec nodes failing to sync or sequence correctly, so running self-hosted clients is the most resilient and technically sound approach.
 
-___
-
 ## 📚 Reference Documentation
 
-
-Below you’ll find links to the official Aztec documentation, along with community-contributed resources designed to help you deploy, configure, and operate Aztec nodes:
+Official Aztec documentation, plus community-contributed resources for deploying and operating Aztec nodes:
 
 - https://docs.aztec.network/the_aztec_network/guides/run_nodes/how_to_run_sequencer
 - https://docs.aztec.network/the_aztec_network/guides/run_nodes/cli_reference
+- https://docs.aztec.network/operate/operators/keystore/creating_keystores
+- https://docs.aztec.network/operate/operators/keystore/storage-methods
 - https://github.com/0xmoei/geth-prysm-node
-- https://github.com/0xmoei/aztec-network/blob/883a8ecc1772accef47c1a2f9d655d34889ad176/README.md#9-run-sequencer-node
+- https://github.com/0xmoei/aztec-network
 - https://github.com/frianowzki/aztec-sequencer-node
 - https://aztec.starfrich.me/
 - https://dashtec.xyz/
 - https://aztec.denodes.app/dashboard
 
-___
+## 🛡️ Suggested Hardware & Bandwidth Requirements
 
-
-
-
-##  🛡️ Suggested Hardware & Bandwidth Requirements
 <table>
   <tr>
-    <th colspan="4"> OS: Ubuntu 20.04 or later</th>
+    <th colspan="4">OS: Ubuntu 20.04 or later</th>
   </tr>
   <tr>
     <td>RAM</td>
@@ -46,143 +81,115 @@ ___
   </tr>
 </table>
 
+> If you enable Prysm's `--supernode` mode (full blob/data-column custody — see Part 1), budget significantly more RAM and bandwidth than the table above. It's not needed for normal solo staking; see the note in Part 1, Step 5.
 
-## 🖥️ Personal PC Specifications for Running a Node
+### 🖥️ Personal PC Specifications for Running a Node
 
+- **Processor (CPU):** Intel Core i7 (14th Gen), 20 cores (8P+12E), 3.4 GHz base / 5.6 GHz max turbo.
+- **Memory (RAM):** 32GB DDR5 (2×16GB) at 6000 MHz, CL32, dual-channel.
+- **Storage:** 2TB NVMe SSD, PCIe 4.0 Gen 4x4.
+- **Power Supply (PSU):** 750W, 80 Plus Bronze.
+- **Cooling:** 240mm AIO liquid cooler, dual fans.
+- **Motherboard:** ATX, B760 chipset, DDR5 + PCIe 4.0 support.
 
-- **Processor (CPU)**  
-  Intel Core i7 (14th Gen) with 20 cores (8 Performance + 12 Efficient), 3.4 GHz base and 5.6 GHz max turbo.
+## ⚠️ Security Checklist Before You Start
 
-- **Memory (RAM)**  
-  32GB DDR5 (2×16GB) at 6000 MHz with CL32 latency in dual-channel configuration.
+This guide handles real private keys (JWT secrets, validator attester/BLS keys, keystore passwords). Before you touch a terminal:
 
-- **Storage**  
-  2TB SSD using PCIe 4.0 NVMe interface with Gen 4x4 for high-speed data transfer.
+- Never commit `jwt.hex`, `password.txt`, `validators.json`, `keys/`, or `.env` files to git — see the [.gitignore](#️-gitignore) section at the end and add it to your repo **before** your first commit, not after.
+- The `AZTEC_ADMIN_PORT` (8880) is an unauthenticated administrative API. It must never be reachable from outside the host — don't add a UFW rule for it, don't forward it on your router. See [Combined Firewall Reference](#-combined-firewall-reference).
+- If you're following the "quick test" sequencer path with a plaintext private key in `.env`, treat that key as already compromised: use a fresh wallet, fund it with only what you're willing to lose, and never reuse it elsewhere.
+- For anything beyond testnet experimentation, use the CLI-generated keystore (Part 2B) and keep strict file permissions (`chmod 600`) on every file that touches a private key.
 
-- **Power Supply (PSU)**  
-  750W unit with 80 Plus Bronze certification for efficient energy usage.
+---
 
-- **Cooling**  
-  240mm liquid cooler with dual fans.
+# ⟠ Part 1 — Ethereum L1 Node (Geth + Prysm)
 
-- **Motherboard**  
-  ATX board with B760 chipset, supports DDR5 and PCIe 4.0.
+Step by step guide for setting up a `docker-compose.yml` to run a Mainnet Ethereum full node using **Geth** as the execution client and **Prysm** as the consensus client on Ubuntu.
 
+## Step 1. 🔧 Install Dependencies
 
-___
+Refresh the package index and upgrade all installed packages:
 
-
-# ⟠  Eth-Prysm-node
-Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Ethereum full node using **Geth** as the `execution client` and **Prysm** as the `consensus client` on an Ubuntu-based system.
-
-___
-
-## Step 1. 🔧 Install Dependecies
-**Packages:**
-Refreshes the local package index and then upgrades all installed packages to their latest available versions without prompting for confirmation.
 ```bash
 sudo apt-get update && sudo apt-get upgrade -y
 ```
-This command installs a wide range of essential development tools, system utilities, and libraries required to build, run, and manage blockchain nodes and Docker-based environments on a Linux system.
+
+Install build tools and system utilities needed for blockchain nodes and Docker:
+
 ```bash
-sudo apt install curl iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev  -y
+sudo apt install curl iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip -y
 ```
+
 **Docker:**
-The system is first updated and any previous Docker-related packages are removed to prevent conflicts. Then, necessary certificates and tools like `gnupg` are installed to securely add Docker’s official GPG key. A trusted keyring directory is created, and Docker’s repository is added to the system’s sources list. After updating the package list again, the official Docker Engine, CLI, and plugins are installed from Docker’s repository. Finally, Docker is tested with `hello-world`, enabled to start on boot, and restarted to ensure it runs properly.
+
 ```bash
 sudo apt update -y && sudo apt upgrade -y
-for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
+for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove -y "$pkg"; done
 
 sudo apt-get update
-sudo apt-get install ca-certificates curl gnupg
+sudo apt-get install -y ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update -y && sudo apt upgrade -y
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# Test Docker
 sudo docker run hello-world
 
 sudo systemctl enable docker
 sudo systemctl restart docker
 ```
 
-
----
+> Añadí `-y` al loop de `apt-get remove`: sin él, cada paquete pide confirmación interactiva y el script se queda colgado esperando input en una sesión no interactiva (ej. ejecutándolo vía SSH con `bash script.sh`).
 
 ## Step 2. 👤➕🐳 Add Your User to the Docker Group
 
-It must show "carlos"
 ```bash
-whoami
-```  
-It must show "1000"
-```bash
-id -u
-```
-It must show "1000"
-```bash
-id -g        
-```
-It should say: groupadd: the group "docker" already exists
-```bash
-sudo groupadd docker
-```
-The following command adds the user carlos to the docker group so they can use Docker without sudo
-```bash
-sudo usermod -aG docker carlos
-```
-Restart the session or the system
-```bash
-reboot
+whoami        # should print your username
+id -u         # should print 1000 for the first non-root user
+id -g         # should print 1000
+sudo groupadd docker || true   # "already exists" is fine
+sudo usermod -aG docker "$USER"
 ```
 
+Apply the new group without a full reboot:
+
+```bash
+newgrp docker
+```
+
+(A reboot also works, but `newgrp docker` applies the group change to your current shell immediately — useful if you're running this remotely over SSH and don't want to risk a hung reconnect.)
+
+> Generalicé `carlos` → `$USER` en todo el documento. Si vas a publicar esta guía para que otros la sigan, un username hardcodeado obliga a cada lector a editar cada comando a mano — y es fácil que se les pase uno.
 
 ## Step 3. 📁 Create Directories
-These commands create the necessary directory structure for Ethereum's execution and consensus clients under the user's home directory (`~/ethereum`):
+
 ```bash
 mkdir -p ~/ethereum-mainnet/execution ~/ethereum-mainnet/consensus
 ```
 
----
-
-## Step 4. 🔐 Generate the JWT secret:
-Generates a 32-byte random JWT secret in hexadecimal format and saves it to a file used for secure communication between clients.
+## Step 4. 🔐 Generate the JWT Secret
 
 ```bash
 openssl rand -hex 32 > ~/ethereum-mainnet/jwt.hex
-```
-
-Protect the JWT secret with strict permissions
-```bash
-chmod 600 /home/carlos/ethereum-mainnet/jwt.hex
-```
-
-Prints the contents of the jwt.hex file to verify it was correctly generated.
-```bash
+chmod 600 ~/ethereum-mainnet/jwt.hex
 cat ~/ethereum-mainnet/jwt.hex
 ```
 
----
-
 ## Step 5. 🐳 Configure `docker-compose.yml`
-Changes the current working directory to the `ethereum` folder where you will place the `docker-compose.yml ` configuration.
+
 ```bash
 cd ~/ethereum-mainnet
-```
-Opens a new or existing `docker-compose.yml` file in the Nano text editor to write or edit the service definitions.
-```bash
 nano docker-compose.yml
 ```
-Replace the following code into your `docker-compose.yml` file:
+
 ```yaml
 services:
   geth:
@@ -190,15 +197,9 @@ services:
     container_name: geth
     network_mode: host
     restart: unless-stopped
-    ports:
-      - 30303:30303
-      - 30303:30303/udp
-      - 8545:8545
-      - 8546:8546
-      - 8551:8551
     volumes:
-      - /home/carlos/ethereum-mainnet/execution:/data
-      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
+      - ./execution:/data
+      - ./jwt.hex:/data/jwt.hex
     command:
       - --mainnet
       - --http
@@ -217,21 +218,17 @@ services:
         max-file: "3"
 
   prysm:
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
+    image: gcr.io/offchainlabs/prysm/beacon-chain:stable
     container_name: prysm
     network_mode: host
     restart: unless-stopped
     volumes:
-      - /home/carlos/ethereum-mainnet/consensus:/data
-      - /home/carlos/ethereum-mainnet/jwt.hex:/data/jwt.hex
+      - ./consensus:/data
+      - ./jwt.hex:/data/jwt.hex
     depends_on:
       - geth
-    ports:
-      - 4000:4000
-      - 3500:3500
     command:
       - --mainnet
-      - --supernode
       - --accept-terms-of-use
       - --datadir=/data
       - --disable-monitoring
@@ -243,8 +240,8 @@ services:
       - --grpc-gateway-host=0.0.0.0
       - --grpc-gateway-port=3500
       - --min-sync-peers=3
-      - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
       - --checkpoint-sync-url=https://mainnet.checkpoint.sigp.io
+      - --genesis-beacon-api-url=https://mainnet.checkpoint.sigp.io
       - --subscribe-all-subnets
       - --verbosity=info
     logging:
@@ -252,580 +249,233 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-
 ```
 
+Lo que cambié aquí y por qué:
 
-___
+- **Rutas relativas en `volumes`** (`./execution`, `./jwt.hex`) en vez de `/home/carlos/...` absolutas. Como ya hiciste `cd ~/ethereum-mainnet` antes de `docker compose up`, las rutas relativas funcionan igual y el archivo es portable entre cualquier usuario o máquina.
+- **Quité el bloque `ports:`** de ambos servicios: con `network_mode: host`, Docker ignora por completo cualquier mapeo de `ports:` — el contenedor ya comparte la pila de red del host directamente. Dejarlo ahí no rompe nada, pero engaña al lector haciéndole pensar que ahí se controla qué está expuesto; lo que realmente controla la exposición es UFW (Step 7).
+- **Imagen de Prysm actualizada** a `gcr.io/offchainlabs/prysm/beacon-chain`. Prysm se fusionó con Offchain Labs y están migrando todos los repos activos fuera de `prysmaticlabs`; las URLs antiguas (`gcr.io/prysmaticlabs/...`) siguen funcionando hoy pero quedarán deprecadas y dejarán de actualizarse.
+- **Quité `--supernode`**: convierte tu nodo en un "super node" que custodia el 100% de las data columns post-Fusaka — aumenta significativamente los requisitos de RAM y ancho de banda, muy por encima de los 16GB/600Mbps de la tabla de hardware de arriba. No lo necesitas para staking normal en solitario; solo tiene sentido si vas a servir blobs históricos a terceros.
 
 ## Step 6. ▶️ Run Geth & Prysm Nodes
 
-▶️ Start Geth & Prysm Nodes:
-Starts the Geth and Prysm containers in detached mode (running in the background).
 ```bash
-docker compose up -d
+docker compose up -d        # start both containers, detached
+docker compose logs -f      # tail logs from both containers
+docker compose down         # stop and remove containers (before updating)
 ```
 
-🧾 Node Logs
-Continuously displays the real-time logs from both containers.
-```bash
-docker compose logs -f
-```
-⛔ Stop node. 
-Run `docker compose down` to stop and remove all running Aztec containers before updating.
-```bash
-docker compose down
-```
 ## Step 7. 🔥 UFW
 
-
-✅ Aplicar reglas UFW:
-
 ```bash
-# 1. Allow SSH access (only if you use SSH, otherwise omit)
 sudo ufw allow OpenSSH
 
-# 2. Allow P2P traffic required for Geth P2P, Geth P2P, Prysm P2P, Prysm gossip/block sync
+# Geth P2P
+sudo ufw allow 30303/tcp
+sudo ufw allow 30303/udp
 
-sudo ufw allow 30303/tcp      
-sudo ufw allow 30303/udp      
-sudo ufw allow 13000/tcp     
-sudo ufw allow 12000/udp      
+# Prysm P2P (default ports, separate from the RPC/gateway ports 4000/3500)
+sudo ufw allow 13000/tcp
+sudo ufw allow 12000/udp
 
-# 3. Default policy: deny incoming traffic
 sudo ufw default deny incoming
-
-# 4. Allow outgoing traffic
 sudo ufw default allow outgoing
-
-# 5. Enable the firewall
 sudo ufw enable
-
 ```
 
-Used Ports 
 ```bash
-sudo ss -tulnp
+sudo ss -tulnp          # ports currently in use
+sudo ufw status verbose # active UFW rules
 ```
-UFW rules
-```bash
-sudo ufw status verbose
-```
-
-___
 
 ## Step 8. 🔄 Checking If Nodes are Synced
-**Execution Node (Geth)**
-```
+
+**Execution Node (Geth):**
+
+```bash
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
 ```
-✅Response if fully synced:
-```json
-{"jsonrpc":"2.0","id":1,"result":false}
-```
-🚫Response if still syncing:
-```json
-{"jsonrpc":"2.0","id":1,"result":{"currentBlock":"0x1a2b3c","highestBlock":"0x1a2b4d","startingBlock":"0x0"}}
-```
-You'll see an object with `startingBlock`, `currentBlock`, and `highestBlock`, indicating the sync progress.
 
-**Beacon Node (Prysm)**
+✅ Fully synced: `{"jsonrpc":"2.0","id":1,"result":false}`
+🚫 Still syncing: returns an object with `currentBlock`, `highestBlock`, `startingBlock`.
+
+**Beacon Node (Prysm):**
+
 ```bash
 curl http://localhost:3500/eth/v1/node/syncing
 ```
-✅Response if fully synced:
-```json
-{"data":{"head_slot":"12345","sync_distance":"0","is_syncing":false}}
-```
-If `is_syncing` is `false` and `sync_distance` is `0`, the beacon node is fully synced.
 
-🚫Response if still syncing:
-```json
-{"data":{"head_slot":"12345","sync_distance":"100","is_syncing":true}}
-```
-If `is_syncing` is `true`, the node is still syncing, and `sync_distance` indicates how many slots behind it is.
-
-___
-
+✅ Fully synced: `is_syncing: false`, `sync_distance: "0"`.
+🚫 Still syncing: `is_syncing: true`, with `sync_distance` indicating slots behind.
 
 ## Step 9. 🔎 Getting the RPC Endpoints
-### Execution Node (Geth)
-Aztec Sequencer Execution RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:8545` or `http://localhost:8545`
 
-### Beacon Node (Prysm)
-Aztec Sequencer Consensus Beacon RPC (Running by `docker-compose.yml`)**: `http://127.0.0.1:3500` or `http://localhost:3500`
+- **Execution (Geth):** `http://127.0.0.1:8545`
+- **Beacon (Prysm):** `http://127.0.0.1:3500`
 
 ---
 
-# 🟣 Aztec-node (Testnet)
-Step by step guide for setting up a `docker-compose.yml` for running a `Sepolia` Aztec full node and Validator registration on an Ubuntu-based system.
+# 🟣 Part 2 — Aztec L2 Node
 
-___
-## Step 1. 👛 Create a Wallet and Fund It
-To interact with the Aztec node on Sepolia, we will create a new MetaMask wallet (https://metamask.io/) in order to obtain its public and private key pair, and then fund it with Sepolia ETH using a faucet (https://sepolia-faucet.pk910.de/) so it can perform on-chain actions.
+Pick the path that matches what you want to run: a plain **full node** (sync and query the network, no staking) or a **sequencer/validator** (participate in consensus, requires keys and funded accounts).
 
-___
- 
-## Step 2. 📁 Create Directory
-Creates the `nodeaztec/aztec` directory under your home folder, including any parent directories, to store Aztec’s binaries and data.
-```bash
-mkdir -p ~/nodeaztec/aztec
-```
-___
+## Step 1. ⚙️ Install the Aztec CLI
 
-## Step 3. ⚙️ Install Aztec
-Downloads and runs Aztec’s official installer script in an interactive Bash shell, installing the latest Aztec CLI tools.
 ```bash
 bash -i <(curl -s https://install.aztec.network)
-```
-
-## Step 4. 🧭 Add Aztec CLI to your System PATH
-This appends the Aztec binary path (`~/.aztec/bin`) to your PATH environment variable in the `.bashrc` file, so that your system can recognize the aztec command from any terminal.
-
-```bash
 echo 'export PATH="$HOME/.aztec/bin:$PATH"' >> ~/.bashrc
-```
-This reloads the .bashrc file to apply the updated PATH immediately without needing to restart the terminal.
-
-```bash
 source ~/.bashrc
-```
-
-___
-
-
-
-Now check if Aztec successfully installed
-Runs the Aztec CLI with no arguments to verify that the command is available and prints its usage/help text, confirming a successful installation.
-```bash
-aztec
-```
-Then update Aztec to Alpha Testnet
-Switches or initializes your Aztec environment to the Alpha Testnet configuration, downloading any required network artifacts and setting your CLI to target that test network.
-```bash
-aztec-up 2.1.2
-```
-
-✅ Verify 
-
-```bash
 aztec --version
-```
-___
-
-
-## Step 5. 🔥 Enable Firewall & Open Ports
-Enables the firewall and opens required ports for SSH access and for the Aztec sequencer to communicate.
-```bash
-# Firewall
-sudo ufw allow 22
-sudo ufw allow ssh
-sudo ufw enable
-
-# Sequencer
-sudo ufw allow 40400
-sudo ufw allow 8080
-  
+aztec-up latest
 ```
 
-## Step 6. 🌐 Check Your Public and Local IPs
+> Versión de imagen: la documentación oficial usa `aztecprotocol/aztec:2.1.4` como ejemplo en el momento de escribir esto. Aztec testnet se actualiza con frecuencia — usa `aztec-up latest` para resolver siempre la versión recomendada actual en vez de fiarte de un tag fijo copiado de una guía (incluida esta).
 
-Use these commands to verify your public IP (used for external communication) and your local/internal IPs (used within your network or Docker).
+## 🟢 Step 2A. Full Node (no staking)
+
+Just syncing and querying the network — no validator keys needed.
 
 ```bash
-# Shows your public IPv4 address
-curl ipv4.icanhazip.com
-# Lists all local IP addresses assigned to your machine; look for the local one (e.g., 192.168.x.x)
-hostname -I
+mkdir -p ~/aztec-fullnode/data
+cd ~/aztec-fullnode
+nano .env
 ```
-___
-
-
-## Step 7. 🔀 Port Forwarding
-
-Many internet providers use Carrier-Grade NAT (CG-NAT) to conserve IPv4 addresses. Under CG-NAT, multiple customers share a single public IP address, and your router is assigned a private IP by your ISP, not a true public one. As a result, you cannot receive unsolicited external connections or open ports properly, because incoming traffic cannot be uniquely routed to your home network.
-
-To enable true port forwarding and make your nodes publicly accessible, you must contact your ISP and request a dedicated public IP address (static public IP). This change allows your router to be directly reachable from the internet and makes port forwarding possible.
-
-When running multiple nodes on different PCs within your home network, opening ports on each PC’s firewall (ufw allow) only allows local access. To make the nodes accessible from outside your network, you must configure port forwarding on your router.
-
-Where to do port forwarding:
-* Log in to your router’s admin panel (usually at 192.168.1.1 or 192.168.0.1 via a web browser).
-* Find the Port Forwarding, Virtual Server, or NAT section.
-
-
-What to do:
-Forward specific external ports to the internal IP addresses and ports of each PC running a node.
-
-Example:
-* Forward external port 40400 → internal IP 192.168.1.100, port 40400 (PC1)
-* Forward external port 40401 → internal IP 192.168.1.101, port 40400 (PC2)
-
-Tip:
-To ensure your port forwarding rules remain valid, you need to assign static IP addresses or configure DHCP reservations for each PC running a node. This prevents your internal IP addresses (e.g., `192.168.1.101`) from changing over time due to automatic IP assignment by your router (DHCP).
 
 ```bash
-192.168.1.1  
-User: user
-Password: xxxxxxxx
-https://www.yougetsignal.com/tools/open-ports/ 
+DATA_DIRECTORY=./data
+LOG_LEVEL=info
+ETHEREUM_HOSTS=http://127.0.0.1:8545
+L1_CONSENSUS_HOST_URLS=http://127.0.0.1:3500
+P2P_IP=<your external/public IP>
+P2P_PORT=40400
+AZTEC_PORT=8080
 ```
 
-To configure a DHCP reservation, you’ll need the MAC address of each PC, which uniquely identifies its network interface and can be obtained by running the `ip a` command in the terminal.
-
-MAC address
-```bash
-ip a
-```
-
-If you have correctly configured port forwarding on your router, verify the accessibility of your nodes and services using the following commands:
-
-
-Lists all processes on the local machine that are currently using TCP or UDP port 40400 (internal port).
-```bash
-sudo lsof -i :40400
-```
-Shows which process is bound to internal port 8080 and actively listening for incoming connections, including PID and executable name.
-```bash
-sudo ss -tulnp | grep 8080
-```
-Attempts to establish a TCP connection to internal port 40404 on localhost (loopback), to check if a service is listening.
-```bash
-nc -vz localhost 40404
-```
-Tries to establish a TCP connection to external (public) IP 79.116.75.145 on external port 8080, to verify port forwarding or public availability.
-```bash
-nc -vz yourpublicIP 8080
-```
-Attempts to reach external IP 79.116.75.145 on external port 40400, verifying whether this port is exposed through the router via port forwarding.
-```bash
-nc -vz yourpublicIP 40400
-```
-Attempts to connect to another device within the local network (internal IP 192.168.1.135) on its internal port 40400, to test LAN-level connectivity.
-```bash
-nc -vz yourinternalIP 40400
-```
-___
-
-
-## Step 8. 🐳 Configure `docker-compose.yml`
-
-Changes your working directory to the `nodeaztec` folder where your Aztec node’s Docker Compose configuration is located.
-```bash
-cd ~/nodeaztec
-```
- Opens the `docker-compose.yml` file in the Nano text editor so you can define and configure all your containerized services.
 ```bash
 nano docker-compose.yml
 ```
 
-
-Replace the following code into your `docker-compose.yml` file:
 ```yaml
-
 services:
-  node:
-    container_name: aztec-sequencer
-    image: aztecprotocol/aztec:2.1.2
+  aztec-full-node:
+    image: aztecprotocol/aztec:2.1.4
+    container_name: aztec-full-node
     network_mode: host
     restart: unless-stopped
-    environment:
-      ETHEREUM_HOSTS: "http://localhost:8545"
-      L1_CONSENSUS_HOST_URLS: "http://localhost:3500"
-      DATA_DIRECTORY: /data
-      VALIDATOR_PRIVATE_KEYS: "0xPrivateKey1,0xPrivateKey2,0xPrivateKey3"
-      SEQ_PUBLISHER_PRIVATE_KEY: 0xPrivateKey1
-      COINBASE: 0xPubliceKey
-      GOVERNANCE_PAYLOAD: 0xDCd9DdeAbEF70108cE02576df1eB333c4244C666
-      LOG_LEVEL: debug
-    entrypoint: >
-      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network testnet --node --archiver --sequencer --p2p-enabled true --p2p.listenAddress 0.0.0.0 --p2p.p2pIp IP --p2p.p2pPort 40400 --p2p.queryForIp false --port 8080 --sync-mode full'
+    env_file: .env
     volumes:
-      - /root/.aztec/testnet/data/:/data
-
+      - ./data:/data
+    entrypoint: >-
+      node
+      --no-warnings
+      /usr/src/yarn-project/aztec/dest/bin/index.js
+      start
+      --node
+      --archiver
+      --network testnet
 ```
-▶️ Starts all services defined in your `docker-compose.yml` in the background (detached mode)
+
 ```bash
 docker compose up -d
-```
-🧾 Streams real-time combined logs from all running Compose services, letting you watch your nodes’ output and troubleshoot as they run.
-```bash
 docker compose logs -f
 ```
-⛔ Run `docker compose down` to stop and remove all running Aztec containers before updating.
-```bash
-docker compose down
-```
 
-___
+Firewall: only `P2P_PORT` (40400 tcp/udp) needs to be open — see [Combined Firewall Reference](#-combined-firewall-reference).
 
-# 🧰 Aztec Node Setup — Testnet 2.0.2
+## 🟣 Step 2B. Sequencer / Validator (Production)
 
-## Step 1. 🔐 Create folder structure with secure permissions
+This is the path for solo staking. It replaces two inconsistent methods from the original draft — a plaintext private key directly in `docker-compose.yml`, and a `geth account import`-based keystore that silently dropped the BLS key (without it, an attester literally cannot attest — the node would run but never validate). Both are gone; this is the current officially-documented flow.
+
+### Generate your validator keystore
+
 ```bash
 mkdir -m 700 -p ~/aztec-sequencer/keys ~/aztec-sequencer/data
-```
-
-## Step 2. 📄 Create the .env file
-```bash
 cd ~/aztec-sequencer
-touch .env
-```
-```bash
-nano .env
+
+aztec validator-keys new \
+  --fee-recipient 0x0000000000000000000000000000000000000000000000000000000000000000 \
+  --data-dir ./keys \
+  --file validators.json
 ```
 
-And in `.env`, something like this (adjust if you already have it):
+This single command generates **both** the Ethereum (`eth`) and BLS (`bls`) keys your attester needs — the BLS key cannot be created via `geth account import`, it's an Aztec-specific key type with no Ethereum equivalent. It prints a 12-word mnemonic once: **write it on paper, store it offline.** It's the only way to regenerate these exact keys later.
 
-```bash
-DATA_DIRECTORY=./data
-KEY_STORE_DIRECTORY=./keys
-LOG_LEVEL=info
-ETHEREUM_HOSTS=[your L1 execution endpoint, or a comma separated list if you have multiple]
-L1_CONSENSUS_HOST_URLS=[your L1 consensus endpoint, or a comma separated list if you have multiple]
-P2P_IP=[your external IP address]
-P2P_PORT=40400
-AZTEC_PORT=8080
-AZTEC_ADMIN_PORT=8880
-```
+The resulting `~/aztec-sequencer/keys/validators.json` looks like:
 
-This command displays the contents of the `.env` file in the terminal.
-```bash
-cat .env
-```
-
-## Step 3. 🏷️ Crete The Aztec Address
-
-Aztec CLI installed:
-```bash
-bash -i <(curl -s https://install.aztec.network)
-```
-Run this command in your terminal to temporarily add the directory to the PATH for this current session:
-```bash
-export PATH="$HOME/.aztec/bin:$PATH"
-```
-The testnet version installed:
-```bash
-aztec-up -v latest
-```
-Set the required environment variables:
-```bash
-export NODE_URL=https://aztec-testnet-fullnode.zkv.xyz
-export SPONSORED_FPC_ADDRESS=0x299f255076aa461e4e94a843f0275303470a6b8ebe7cb44a471c66711151e529
-```
-Unlike sandbox, testnet has no pre-deployed accounts. You need to create your own:
-```bash
-aztec-wallet create-account \
-    --register-only \
-    --node-url $NODE_URL \
-    --alias my-wallet
-```
-# Step 4. 🔐 Keystore Encryption (Attester)
-
-1️⃣ Create a file with your private key (without 0x)
-```bash
-printf "aabb...887799" > /tmp/privatekey.txt
-chmod 600 /tmp/privatekey.txt
-```
-2️⃣ Crear un archivo con la contraseña de cifrado
-Create a file with the encryption password
-Disable shell history (prevents the commands from being saved in `~/.bash_history`)
-```bash
-set +o history
-```
-3️⃣ Generate and display a 10-word passphrase ONE TIME ONLY (it is not saved to a variable or file):
-```bash
-grep -E '^[a-z]{5,}$' /usr/share/dict/words | shuf -n 10 | paste -sd ' ' -
-```
-## 4️⃣ WRITE THE PASSPHRASE ON PAPER
-Confirm before continuing:
-
-```bash
-read -s -p "Apunta la passphrase en papel y pulsa ENTER para continuar..." ; echo
-```
-
-5️⃣ Clear the screen and scrollback (works in most modern terminals)
-```bash
-printf '\033c'
-printf '\e[3J' 
-clear
-```
-6️⃣ Restore shell history:
-```bash
-set -o history
-```
-7️⃣ Save the passphrase to a secure file
-```bash
-read -s -p "Introduce ahora la passphrase que escribiste en papel: " PASSWORD
-echo
-printf "%s" "$PASSWORD" > ~/aztec-sequencer/password.txt
-chmod 600 ~/aztec-sequencer/password.txt
-unset PASSWORD
-```
-8️⃣ Verify there is no trailing newline
-```bash
-hexdump -C ~/aztec-sequencer/password.txt | tail -n1
-```
-
-9️⃣ Check file permissions (DOES NOT display the passphrase)
-```bash
-ls -l ~/aztec/password.txt
-wc -c ~/aztec/password.txt
-```
-
-🔟  Import the private key as an encrypted keystore
-```bash
-geth account import --keystore ~/aztec-sequencer/keys --password ~/aztec-sequencer/password.txt /tmp/privatekey.txt
-```
-
-⓫  Remove the temporary private key
-```bash
-shred -u /tmp/privatekey.txt
-```
-🔍 How to know exactly which file was created (and its path)
-
-Directly from geth with the account list
-```bash
-geth account list --keystore ~/aztec-sequencer/keys
-```
-You will see something like:
-```bash
-Account #0: {0xabcdef1234567890} /home/usuario/aztec-sequencer/keys/UTC--2025-10-22T17-41-12.123Z--0xabcdef1234567890.json
-```
-That second value is exacly the `path` you must use in your `validators.json`.
-
-## 📄 Step 5. — Configure your validators.json
-
-Edit your JSON to point to that file and to the password. If only the attester is encrypted, and the other roles (`coinbase`,`publisher` ) are plaintext, it would look like this: Edita tu JSON para que apunte a ese archivo y a la contraseña.
-
-```bash
+```json
 {
   "schemaVersion": 1,
   "validators": [
     {
       "attester": {
-        "path": "/home/usuario/aztec-sequencer/keys/UTC--2025-10-16T22-40-30.000Z--0xabcdef1234567890.json",
-        "password_file": "/home/usuario/aztec-sequencer/password.txt"
+        "eth": "0x...",
+        "bls": "0x..."
       },
-      "publisher": "0x1234567890abcdef1234567890abcdef12345678",
-      "coinbase": "0x9876543210abcdef9876543210abcdef98765432",
-      "feeRecipient": "0xabcdef1234567890abcdef1234567890abcdef12"
+      "feeRecipient": "0x0000000000000000000000000000000000000000000000000000000000000000"
     }
   ]
 }
-
 ```
 
-🔐 NOTE:
-Use "password_file" (not "password") if the software allows it — this way you don't leave the password written in the JSON in plain text. If it only accepts "password", you can leave it in clear text, but it is less secure.
+> 🔐 **This file contains plaintext private keys.** It is the equivalent of a wallet seed phrase. Lock it down immediately:
 
-
-## 🛡️ Step 6. Security and verification
-
-Apply strict permissions:
 ```bash
 chmod 700 ~/aztec-sequencer/keys
-chmod 600 ~/aztec-sequencer/keys/*
-chmod 600 ~/aztec-sequencer/password.txt
+chmod 600 ~/aztec-sequencer/keys/validators.json
 ```
 
-## Step 7. 🧪 Verifications
+For production beyond testnet experimentation, Aztec supports remote signers (Web3Signer) for the Ethereum side of the key and JSON V3 encrypted keystores — see [Key storage methods](https://docs.aztec.network/operate/operators/keystore/storage-methods) in the official docs. Note that BLS keys specifically can never be handed off to a remote signer; they always live as a private key on disk, protected by filesystem permissions.
 
-✅ Verify that the file exists
+### Fund your attester address
+
+Read the generated address and fund it via the Sepolia faucet:
 
 ```bash
-ls ~/aztec-sequencer/keys/UTC--*
+jq -r '.validators[0].attester.eth' ~/aztec-sequencer/keys/validators.json
 ```
 
-✅ Verify that the keystore was imported:
+Use https://sepolia-faucet.pk910.de/ to send Sepolia ETH to that address — it covers gas for publishing blocks (the original draft's "create a wallet in MetaMask first" step is optional now: the CLI generates a fresh, correctly-formatted key for you, you just need to fund the address it outputs).
+
+### Configure `.env`
+
 ```bash
-geth account list --keystore ~/aztec-sequencer/keys
+nano .env
 ```
 
-✅ Verify that the validators.json file is well-formed:
 ```bash
-jq . ~/aztec-sequencer/validators.json
+DATA_DIRECTORY=./data
+KEY_STORE_DIRECTORY=./keys
+LOG_LEVEL=info
+ETHEREUM_HOSTS=http://127.0.0.1:8545
+L1_CONSENSUS_HOST_URLS=http://127.0.0.1:3500
+P2P_IP=<your external IP address>
+P2P_PORT=40400
+AZTEC_PORT=8080
+AZTEC_ADMIN_PORT=8880
 ```
 
-✅ Verify that you can read the address from the JSON
-```bash
-jq -r .address ~/aztec-sequencer/keys/UTC--*.json
-```
+### Configure `docker-compose.yml`
 
-✅ Verify the KDF encryption parameters:
-```bash
-jq .crypto.kdfparams ~/aztec-sequencer/keys/UTC--*.json
-```
-
-✅  Check the permissions of the password file
-```bash
-ls -l ~/aztec-sequencer/password.txt
-```
-
-✅ Check whether the password.txt file contains a newline (it should not)
-```bash
-hexdump -C ~/aztec-sequencer/password.txt | tail -n1
-```
-If it ends with 0a => newline, rewrite with printf
-
-Recommended values:
-```bash
-"n" ≥ 262144 (cuanto más alto, más lento el brute force)
-"r" ≥ 8
-"p" ≥ 1
-```
-
-## Step 8. 🔧  Directory and user permissions
-
-✅ Verify:
-```bash
-ls -l ~/aztec-sequencer
-ls -l ~/aztec-sequencer/keys
-id $USER
-
-```
-✅ That is correct if carlos has UID 1000. 
-
-To confirm:
-```bash
-id carlos
-```
-🛠️  If for some reason the permissions are not correct, fix it:
-```bash
-sudo chown -R 1000:1000 ~/aztec-sequencer
-```
-
-## 🐳 9. Configure docker-compose.yml
-Edit:
 ```bash
 nano docker-compose.yml
 ```
-Replace the following code into your `docker-compose.yml` file:
+
 ```yaml
 services:
   aztec-sequencer:
-    image: "aztecprotocol/aztec:2.0.2"
-    container_name: "aztec-sequencer"
+    image: aztecprotocol/aztec:2.1.4
+    container_name: aztec-sequencer
     network_mode: host
+    restart: unless-stopped
     user: "1000:1000"
-    ports:
-      - ${AZTEC_PORT}:${AZTEC_PORT}
-      - ${AZTEC_ADMIN_PORT}:${AZTEC_ADMIN_PORT}
-      - ${P2P_PORT}:${P2P_PORT}
-      - ${P2P_PORT}:${P2P_PORT}/udp
+    env_file: .env
     volumes:
-      - ${DATA_DIRECTORY}:/var/lib/data
-      - ${KEY_STORE_DIRECTORY}:/var/lib/keystore
+      - ./data:/var/lib/data
+      - ./keys:/var/lib/keystore
     environment:
       KEY_STORE_DIRECTORY: /var/lib/keystore
       DATA_DIRECTORY: /var/lib/data
-      LOG_LEVEL: ${LOG_LEVEL}
-      ETHEREUM_HOSTS: ${ETHEREUM_HOSTS}
-      L1_CONSENSUS_HOST_URLS: ${L1_CONSENSUS_HOST_URLS}
-      P2P_IP: ${P2P_IP}
-      P2P_PORT: ${P2P_PORT}
-      AZTEC_PORT: ${AZTEC_PORT}
-      AZTEC_ADMIN_PORT: ${AZTEC_ADMIN_PORT}
     entrypoint: >-
       node
       --no-warnings
@@ -835,128 +485,157 @@ services:
       --archiver
       --sequencer
       --network testnet
-    restart: always
 ```
-## 📂 10. Secure permissions of the mounted volumes
 
-✅ Verify that the local directories (./data and ./keys) have permissions for UID 1000:
+> `user: "1000:1000"` debe coincidir con el UID/GID real del usuario que creó `~/aztec-sequencer/keys` — confírmalo con `id -u` / `id -g` y ajusta si tu primer usuario no es 1000 (poco común, pero pasa en algunas distros o si ya tenías otros usuarios creados). Si el UID no coincide, el contenedor no podrá leer `validators.json` por permisos y fallará al arrancar.
+
+Verify ownership and permissions before starting:
+
 ```bash
-sudo chown -R 1000:1000 ~/aztec-sequencer/data
-sudo chown -R 1000:1000 ~/aztec-sequencer/keys
+sudo chown -R 1000:1000 ~/aztec-sequencer/data ~/aztec-sequencer/keys
 ```
 
-## 🚀 11. Start & update the node
-
-✅ Validate before bringing it up:
-```bash
-geth account list --keystore ~/aztec-sequencer/keys
-```
-▶️ Start the services:
 ```bash
 docker compose up -d
-```
-🧾 View logs in real time:
-
-```bash
 docker compose logs -f
 ```
-⛔ Stop the node:
+
+Updating the node:
+
+```bash
+aztec-up latest
+docker compose pull
+docker compose up -d
+```
+
+To fully reset and resync from scratch:
+
 ```bash
 docker compose down
+rm -rf ~/aztec-sequencer/data/*
+docker compose up -d
 ```
 
-🔄 Update Node:
+### 🌐 Public IP, Port Forwarding & CG-NAT
 
-Run `aztec-up alpha-testnet` to fetch the latest configuration files for the Alpha Testnet environment.
+Many ISPs use Carrier-Grade NAT (CG-NAT) to conserve IPv4 addresses — under CG-NAT your router doesn't have a true public IP, so incoming connections (including P2P discovery) cannot reach your node no matter how you configure your own firewall. If port forwarding doesn't work after following the steps below, ask your ISP for a dedicated public/static IP.
+
 ```bash
-aztec-up alpha-testnet
+curl ipv4.icanhazip.com   # your public IPv4
+hostname -I               # your local/internal IPs
 ```
-Run `docker compose pull` to download the most recent Docker images defined in your Compose setup.
+
+Router admin panel is usually at `192.168.1.1` or `192.168.0.1` → Port Forwarding / Virtual Server / NAT section. Forward the external `P2P_PORT` (40400) to your machine's internal IP on the same port. **Never forward `AZTEC_ADMIN_PORT` (8880).**
+
+If running multiple nodes on different machines on the same LAN, give each one a static IP or a DHCP reservation (find each machine's MAC via `ip a`) so your forwarding rules don't silently break when DHCP reassigns addresses.
+
 ```bash
-docker compose pull
+sudo lsof -i :40400                          # what's listening locally
+sudo ss -tulnp | grep 8080                   # confirm AZTEC_PORT is bound
+nc -vz localhost 40400                       # local loopback check
+nc -vz <your-public-ip> 40400                # external reachability check
+nc -vz <peer-internal-ip> 40400              # LAN-level reachability check
 ```
-Delete old data:
-This command forcefully deletes the entire Aztec alpha-testnet data directory and all its contents from your home folder to reset the node.
-```bash
-rm -rf ~/.aztec/alpha-testnet/data/
-```
-Re-run Node
 
-___
+---
 
-## 🧰 Tooling Installation
-
-Install Foundry (a smart contract development toolkit)
+## 🧰 Optional: Developer Tooling
 
 ```bash
+# Foundry — smart contract development toolkit
 curl -L https://foundry.paradigm.xyz | bash
 source ~/.bashrc
 foundryup
-```
-Clone the Aztec repository
-```bash
+
+# Aztec monorepo (source code, for advanced debugging)
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-```
-Install Yarn (a JavaScript package manager)
 
-```bash
+# Yarn
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt update
-sudo apt install yarn
+sudo apt install -y yarn
 yarn -v
 ```
 
-___
-
 ## 🆔 Verify Node's Peer ID
-**Find your Node's Peer ID:**
-```bash
-sudo docker logs $(docker ps -q --filter ancestor=aztecprotocol/aztec:alpha-testnet | head -n 1) 2>&1 | grep -i "peerId" | grep -o '"peerId":"[^"]*"' | cut -d'"' -f4 | head -n 1
-```
-* This reveals your Node's Peer ID, Now search it on [Nethermind Explorer](https://aztec.nethermind.io/)
-* Note: It might takes some hours for your node to show up in Nethermind Explorer after it fully synced.
-* Note: If you get no output, replace `alpha-testnet` with the specific version tag (e.g. `0.87.8`) to retrieve the peer ID.
 
-___
+```bash
+docker logs aztec-sequencer 2>&1 | grep -i "peerId" | grep -o '"peerId":"[^"]*"' | cut -d'"' -f4 | head -n 1
+```
+
+> Simplificado: el comando original filtraba contenedores por `ancestor=aztecprotocol/aztec:alpha-testnet`, un tag que no coincide con ninguna de las imágenes usadas en esta guía (`2.1.4`). Como el `docker-compose.yml` ya fija `container_name: aztec-sequencer`, referenciarlo directamente es más simple y no se rompe cada vez que cambias de versión.
+
+Search your Peer ID on [Nethermind Explorer](https://aztec.nethermind.io/) — it can take a few hours to appear after your node fully syncs. Replace `aztec-full-node` in the command above if you're running the full-node-only setup instead.
 
 ## 🎓 Getting Apprentice Role
-Head to Aztec Discord and go to `operator | start-here` channel
-Run command `/operator help` there
-Run this command:
-```bash
-curl -s -X POST -H 'Content-Type: application/json' \
--d '{"jsonrpc":"2.0","method":"node_getL2Tips","params":[],"id":67}' \
-http://localhost:8080 | jq -r ".result.proven.number"
-```
-Change `http://localhost:8080` with your VPS IP:8080
-You will get a BLOCK_NUMBER like `21000` for example, save it.
 
-Now run this:
+Head to the Aztec Discord, `operator | start-here` channel, run `/operator help`.
 
 ```bash
 curl -s -X POST -H 'Content-Type: application/json' \
--d '{"jsonrpc":"2.0","method":"node_getArchiveSiblingPath","params":["BLOCK_NUMBER","BLOCK_NUMBER"],"id":67}' \
-http://localhost:8080 | jq -r ".result"
+  -d '{"jsonrpc":"2.0","method":"node_getL2Tips","params":[],"id":67}' \
+  http://localhost:8080 | jq -r ".result.proven.number"
 ```
-~ Change 2X BLOCK_NUMBER with the `BLOCK_NUMBER` you get recently.
 
-Copy the PROOF and save it.
-___
+Replace `http://localhost:8080` with your VPS IP:8080 if running remotely. Save the resulting `BLOCK_NUMBER`, then:
 
-Now head back to `operator | start-here` and run `/operator start` command.
+```bash
+curl -s -X POST -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","method":"node_getArchiveSiblingPath","params":["BLOCK_NUMBER","BLOCK_NUMBER"],"id":67}' \
+  http://localhost:8080 | jq -r ".result"
+```
 
-~ Change `address` with your Sequencer Node EVM address.
+Save the returned `PROOF`. Back in `operator | start-here`, run `/operator start`, supplying your sequencer EVM address, the `BLOCK_NUMBER`, and the `PROOF` from above. Once registered, check your status with `/operator my-stats`.
 
-~ Change `block-number` with BLOCK_NUMBER you got above.
+> Note: there's a daily registration quota — if you miss it, try again the next day.
 
-~ Change `proof` with PROOF you got above.
-Congratulations, now you have Apprentice role!
+---
 
-## Hit enter and wait for it.
+## 🔥 Combined Firewall Reference
 
-If it successfully registered you can check it from operator | start-here and use the command /operator my-stats and enter your validator address.
-NOTE: Currently there is a daily registration quota each day, if you missed it now you can try tomorrow.
+If you're running both stacks on the same machine, this is the full picture in one place:
 
+| Port | Protocol | Service | Action |
+|---|---|---|---|
+| 22 | tcp | SSH | `ufw allow OpenSSH` |
+| 30303 | tcp/udp | Geth P2P | allow |
+| 13000 | tcp | Prysm P2P | allow |
+| 12000 | udp | Prysm P2P | allow |
+| 40400 | tcp/udp | Aztec P2P | allow |
+| 8080 | tcp | Aztec node API | allow only if you need external access; otherwise leave closed |
+| **8880** | tcp | **Aztec admin API** | **never allow — no auth on this endpoint** |
+| 8545, 8551, 4000, 3500 | tcp | Geth/Prysm local RPC | keep closed externally — these are for `127.0.0.1` / Docker-internal use only |
 
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw enable
+```
+
+## 🗂️ .gitignore
+
+If you publish your deployment config alongside this guide, add this **before** your first commit:
+
+```
+*.env
+jwt.hex
+password.txt
+validators.json
+keys/
+data/
+execution/
+consensus/
+*.log
+```
+
+---
+
+<div align="center">
+
+### 📝 Summary of changes from the original draft
+
+Prysm image migrated to `gcr.io/offchainlabs/prysm/beacon-chain` (org migration) · removed `--supernode` (exceeds the documented hardware budget) · removed non-functional `ports:` blocks under `network_mode: host` · hardcoded `carlos`/`/home/carlos` paths generalized · `apt-get remove` loop fixed to run non-interactively · **critical fix:** the `geth account import`–based attester keystore (missing the required BLS key entirely) replaced with `aztec validator-keys new`, the current officially-documented method · `AZTEC_ADMIN_PORT` (8880) explicitly called out as never-expose across three separate sections · added `.gitignore` and a security checklist, since this guide handles real private keys
+
+</div>
